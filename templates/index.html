@@ -1,0 +1,71 @@
+﻿{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1>Welcome to SpotCheck!</h1>
+    <h3>Created by Daniel Knopf</h3>
+    <p>To receive email alerts when a Wesleyan class becomes available during adjustment, enter your email and the classes you're
+    interested in below! Separate the classes by comma (e.g. Advanced Arabic I, Advanced Korean I, Advanced Tiny Hats)</p>
+    <!--<form action="/" method="POST">
+        <input type="text" name="content" id="content" />
+        <input type="submit" value="SCRAPE ME BABY" />
+    </form>-->
+    <form action="/subscribe" method="POST">
+        <input type="hidden" name="page" value="index" />
+        <label>Email:</label>
+        <input type="text" name="email" id="email"  />
+        <br />
+        <label>Courses:</label>
+        <input type="text" name="courses" id="courses"  />
+        <br />
+        <input type="submit" value="Subscribe to courses" />
+    </form>
+    <div>
+        <p>
+            To view the courses you are already subscribed to, enter your email below!
+        </p>
+    </div>
+    <form action="/show_subscribed_courses" method="POST">
+        <label>Email:</label>
+        <br />
+        <input type="text" name="email" id="user_email" />
+        <br />
+        <input type="submit" value="See subscribed courses" />
+    </form>
+
+
+</div>
+<!--<div class="content">
+    <h1 style="text-align: center">Task Master</h1>
+    {% if tasks|length < 1 %}
+    <h4 style="text-align: center">There are no tasks, create one below</h4>
+    {% else %}
+        <table>
+            <tr>
+                <th>Task</th>
+                <th>Added</th>
+                <th>Actions</th>
+            </tr>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.content }}</td>
+                    <td>{{ task.date_created }}</td>
+                    <td>
+                        <a href="/delete/{{task.key.id}}">Delete</a>
+                        <br>
+                        <a href="/update/{{task.key.id}}">Update</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>    
+    {% endif %}
+    <form action="/" method="POST">
+        <input type="text" name="content" id="content" />
+        <input type="submit" value="Add Task" />
+    </form>
+</div>-->
+{% endblock %}
+
