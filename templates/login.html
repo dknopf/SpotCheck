@@ -8,16 +8,15 @@
     <div class="modalBox">
 
 
-        <h1>Welcome to SpotCheck!</h1>
+        <h1>Your Subscribed Courses</h1>
         <p class="main">
-            To receive email alerts when a Wesleyan class becomes available during adjustment, enter your email and the classes you're
-            interested in below! <br /> <br />Separate the classes by comma, e.g. <i>Advanced Arabic I, Advanced Korean I, Advanced Tiny Hats</i>
+            Please enter your email to view your subscribed classes.
         </p>
         <!--<form action="/" method="POST">
-        <input type="text" name="content" id="content" />
-        <input type="submit" value="SCRAPE ME BABY" />
-    </form>-->
-        <form action="/subscribe" method="POST">
+            <input type="text" name="content" id="content" />
+            <input type="submit" value="SCRAPE ME BABY" />
+        </form>-->
+        <form action="/show_subscribed_courses" method="POST">
             <input type="hidden" name="page" value="index" />
             <br />
             <label>Email address</label>
@@ -26,31 +25,30 @@
             <input type="text" name="email" id="email" />
             <br />
             <br />
-            <label>My courses</label>
+            <br />
+            <!--<label>My courses</label>
             <br />
             <br />
             <input type="text" name="courses" id="courses" />
             <br />
             <br />
-            <input type="submit" value="Subscribe" class="bigBox"/>
+            <br />-->
+            <input type="submit" value="See subscribed courses" />
         </form>
         <br />
-        <form action="/login"><input type="submit" value="View subscribed courses" class="bigBox"/></form>
-        <!--<p class="bottomText">To view the courses you are already subscribed to, </p><form><input type="submit" value="click here" /></form>-->
-        
-    
-    <!--<div>
-        <p>
-            To view the courses you are already subscribed to, enter your email below!
-        </p>
-    </div>
-    <form action="/show_subscribed_courses" method="POST">
-        <label>Email:</label>
         <br />
-        <input type="text" name="email" id="user_email" />
-        <br />
-        <input type="submit" value="See subscribed courses" />
-    </form>-->
+        <!--<div>
+            <p>
+                To view the courses you are already subscribed to, enter your email below!
+            </p>
+        </div>
+        <form action="/show_subscribed_courses" method="POST">
+            <label>Email:</label>
+            <br />
+            <input type="text" name="email" id="user_email" />
+            <br />
+            <input type="submit" value="See subscribed courses" />
+        </form>-->
 
     </div>
 </div>

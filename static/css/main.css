@@ -1,35 +1,93 @@
 ﻿body, html {
+    font-family: 'Karla';
+    background-color: rgb(171, 202, 255);
+}
+
+
+.modalBox {
+    padding: 40px;
+    border-radius: 20px;
+    width: 543px;
+    height: 561px;
+    background-color: rgb(255,255,255);
     margin: 0;
-    font-family: sans-serif;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
-.content {
-    margin: 0 auto;
-    width: 400px;
-}
 
-table, td, th {
-    border: 1px solid #aaa;
-}
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-th {
-    height: 30px;
-}
-
-td {
+h2 {
+    font-size: 15px;
     text-align: center;
-    padding: 5px;
+    color: rgb(137,137,137);
 }
 
-.form {
-    margin-top: 20px;
+.main{
+    font-size: 20px;
+    color: rgb(137,137,137);
 }
 
-#content {
-    width: 70%;
+label{
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(39,39,39)
 }
+
+.unsubscribeBox {
+    position: absolute;
+    right: 20px;
+    background-color: rgb(72, 136, 245);
+    border-radius: 10px;
+    height: 20px;
+    width: 100px;
+    font-family: 'Karla';
+    color: rgb(255,255,255);
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+}
+
+.results {
+    border-collapse: separate;
+    border-spacing: 0 20px;
+}
+
+.bigBox {
+    background-color: rgb(72, 136, 245);
+    border-radius: 10px;
+    height: 43px;
+    width: 543px;
+    font-family: 'Karla';
+    color: rgb(255,255,255);
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+}
+
+.bottomText {
+    font-size: 19px;
+    color: rgb(137,137,137);
+}
+
+input[type=text] {
+    border: none;
+    border-bottom: 1px solid rgb(255, 231, 234);
+    width: 561px;
+}
+
+@font-face {
+    font-family: 'Karla';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Karla'), local('Karla-Regular'), url(https://fonts.gstatic.com/s/karla/v13/qkBbXvYC6trAT7RVLtw.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+h1{
+    text-align:center;
+    font-size: 40px;
+}
+
