@@ -81,7 +81,7 @@ def UpdateEntries(course, num_seats):
     elif len(results) == 1:
         print('got into len results =1 ')
         if results[0]['seats_avail'] == 0 and num_seats > 0:
-            yag=yagmail.SMTP('EMAIL','PASSWORD')
+            yag=yagmail.SMTP('spotcheckwes@gmail.com','SpotCheckWes1234!')
             contents = ["Congrats, a spot has opened up in: " + course + 'Click here to see your subscribed courses/unsubscribe: www.spotcheck.space']
 
             for email in results[0]['emails']:
