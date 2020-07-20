@@ -1,4 +1,1 @@
 cron:
-- description: "test cron scheduling"
-  url: /schedule
-  schedule: every 1000 minutes
