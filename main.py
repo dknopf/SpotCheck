@@ -111,6 +111,8 @@ def GoToSubscribed():
 @app.route('/show_subscribed_courses', methods = ['POST', 'GET'])
 def ShowSubscribedCourses():
     user = request.form['email']
+    if user == '':
+        return render_template('login.html') #Add feedback here
     query = datastore_client.query(kind='user')
     query.key_filter((datastore_client.key('user', user)), '=')
     results = list(query.fetch())

@@ -16,6 +16,7 @@
     left: 50%;
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
+    box-shadow: 0px 0px 20px rgba(108, 108, 108, .25);
 }
 
 
@@ -74,9 +75,14 @@ label{
 
 input[type=text] {
     border: none;
-    border-bottom: 1px solid rgb(255, 231, 234);
+    border-bottom: 1px solid rgb(225, 231, 234);
     width: 561px;
 }
+
+input[type=text]:focus{
+    outline: none;
+}
+
 
 @font-face {
     font-family: 'Karla';
