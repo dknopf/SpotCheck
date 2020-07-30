@@ -11,16 +11,17 @@
         {% if courses|length < 1 %}
         <h4 style="text-align: center">There are no courses, subscribe to one on the previous page</h4>
         {% else %}
-        <table class="results">
+        <table class="courseTable">
             {% for course in courses %}
             <tr>
-                <td>{{ course }}</td>
-                <td>
-                    <form action="/unsubscribe" method="POST">
+                <td class="courseListText">{{ course }}</td>
+                <td class="unsubscribeLink">
+                    <a href="unsubscribe?user={{user}}&course={{course}}" class="standardLink">Unsubscribe</a>
+                    <!--<form action="/unsubscribe" method="POST" class="unsubscribeBox">
+                        <input type="submit" value="Unsubscribe" class="unsubscribeLink" />
                         <input type="hidden" name="course" value="{{ course }}" />
                         <input type="hidden" name="user" value="{{ user }}" />
-                        <input type="submit" value="Unsubscribe" class="unsubscribeBox"/>
-                    </form>
+                    </form>-->
                 </td>
             </tr>
             {% endfor %}
@@ -36,7 +37,7 @@
         <br />
 
         <form action="/" method="POST">
-            <input type="submit" value="Return to home page" class="bigBox"/>
+            <input type="submit" value="Subscribe to another course" class="bigBox"/>
         </form>
     </div>
 </div>

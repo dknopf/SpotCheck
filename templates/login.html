@@ -26,18 +26,20 @@
             <br />
             <br />
             <br />
-            <!--<label>My courses</label>
-            <br />
-            <br />  
-            <input type="text" name="courses" id="courses" />
-            <br />
-            <br />
-            <br />-->
             <input type="submit" value="See subscribed courses" class="bigBox" />
         </form>
+        <div class="noUser">
+            <p class="bottomText">
+                {% if tryAgain %}
+                No user with given email exists, please try again!
+                {% else %}
+                <br />
+                {% endif %}
+            </p>
+        </div>
         <br />
         <br />
-        <form action="/" method="GET">
+        <form action="/" method="GET" class="homeButton">
             <input type="submit" value="Home" class="bigBox" />
         </form>
         <!--<div>

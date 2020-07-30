@@ -105,35 +105,48 @@ def SubscribeToCourses():
 
 
 @app.route('/login', methods=['POST', 'GET'])
-def GoToSubscribed():
-    return render_template('login.html')
+def login():
+    return render_template('login.html', tryAgain = False)
 
 @app.route('/show_subscribed_courses', methods = ['POST', 'GET'])
 def ShowSubscribedCourses():
     user = request.form['email']
     if user == '':
-        return render_template('login.html') #Add feedback here
+        return render_template('login.html', tryAgain=True) #Add feedback here
     query = datastore_client.query(kind='user')
     query.key_filter((datastore_client.key('user', user)), '=')
     results = list(query.fetch())
     if len(results) == 1:
         return render_template('courselist.html', courses=results[0]['courses'], user=user)
     else:
-        return render_template('courselist.html', courses=['ARABIC', 'english'], user='dknopf@wesleyan.edu')
+        return render_template('login.html', tryAgain = True)
+        #return render_template('courselist.html', courses=['ARABIC', 'english'], user='dknopf@wesleyan.edu')
 
 
-@app.route('/unsubscribe', methods=['POST'])
-def Unsubscribe():
-    if request.method == 'POST':
-        user = request.form['user']
-        course = request.form['course']
-        user_entity = datastore_client.get(datastore_client.key('user', user))
-        user_entity['courses'].remove(course)
-        datastore_client.put(user_entity)
-        course_entity = datastore_client.get(datastore_client.key('course', course))
-        course_entity['emails'].remove(user)
-        datastore_client.put(course_entity)
-        return render_template('courselist.html', courses = user_entity['courses'], user=user)
+@app.route('/unsubscribe', methods=['POST', 'GET'])
+def unsubscribe():
+    user = request.args.get('user', None)
+    course = request.args.get('course', None)
+    user_entity = datastore_client.get(datastore_client.key('user', user))
+    user_entity['courses'].remove(course)
+    datastore_client.put(user_entity)
+    course_entity = datastore_client.get(datastore_client.key('course', course))
+    course_entity['emails'].remove(user)
+    datastore_client.put(course_entity)
+    return render_template('courselist.html', courses = user_entity['courses'], user=user)
+
+#@app.route('/unsubscribe', methods=['POST'])
+#def Unsubscribe():
+#    if request.method == 'POST':
+#        user = request.form['user']
+#        course = request.form['course']
+#        user_entity = datastore_client.get(datastore_client.key('user', user))
+#        user_entity['courses'].remove(course)
+#        datastore_client.put(user_entity)
+#        course_entity = datastore_client.get(datastore_client.key('course', course))
+#        course_entity['emails'].remove(user)
+#        datastore_client.put(course_entity)
+#        return render_template('courselist.html', courses = user_entity['courses'], user=user)
 
 
 if __name__ == '__main__':

@@ -37,21 +37,40 @@ label{
     color: rgb(39,39,39)
 }
 
-.unsubscribeBox {
+.testRow{
+    border: 3px solid black;
+}
+
+.unsubscribeLink {
     position: absolute;
     right: 20px;
-    background-color: rgb(72, 136, 245);
+    /*background: none;
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+    cursor: pointer;*/
+    font-family: 'Karla';
+    font-size: 20px;
+    color: rgb(137,137,137) ;
+    /*background-color: rgb(72, 136, 245);
     border-radius: 10px;
     height: 20px;
     width: 100px;
-    font-family: 'Karla';
     color: rgb(255,255,255);
-    font-weight: bold;
-    font-size: 15px;
-    border: none;
+    border: none;*/
 }
 
-.results {
+.courseListText{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/*.unsubscribeLinkDiv {
+    position: absolute;
+    right: 20px;
+}*/
+
+.courseTable {
     border-collapse: separate;
     border-spacing: 0 20px;
 }
@@ -66,6 +85,32 @@ label{
     font-weight: bold;
     font-size: 15px;
     border: none;
+    -webkit-appearance: none;
+}
+
+
+.madeByText {
+    text-align: center;
+    width: 30%; 
+    position: absolute;
+    left: 35%;
+    right: 25%;
+    bottom: 10px;
+    font-size: 15px;
+    color: rgb(102, 158, 255);
+}
+
+.noUser{
+    text-align: center;
+}
+
+.standardLink {
+    color: rgb(137,137,137);
+}
+
+
+.homeButton{
+    position: fixed;
 }
 
 .bottomText {
