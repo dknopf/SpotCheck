@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from google.cloud import datastore
@@ -14,17 +14,46 @@ datastore_client = datastore.Client()
 
 app = Flask(__name__)
 
+#@app.route('/CreateME')
+#def RetrieveMasterEntity():
+#    query = datastore_client.query(kind='masterEntity')
+#    print('made it past query')
+#    results = list(query.fetch())
+#    return ','.join(results[0]['courseList'])
+
+
+#@app.route('/', methods=['POST', 'GET'])
+#def index():
+#    return render_template('testAutocomplete.html')
+
+@app.route('/autocomplete', methods=['GET'])
+def autocomplete():
+    print('got into top of autocmpletes')
+    search = request.args.get('q')
+    course_query = datastore_client.query(kind='course')
+    course_query.key_filter((datastore_client.key('course', search)), '=')
+    course_results = list(course_query.fetch())
+    print(len(course_results))
+    print('got here')
+    return jsonify(matching_results=course_results)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
     print('got into index!')
-    return render_template('index.html')
+    GetCourseList()
+    return render_template('index.html', course_list=course_list)
     #if request.method == 'POST':
 
     #    StartFunction(datastore_client)
     #    return redirect('/')
     #else:
     #    return render_template('index.html')
+
+def GetCourseList():
+    query = datastore_client.query(kind='masterEntity')
+    results = list(query.fetch())
+    global course_list
+    course_list = results[0]['courseList']
 
 @app.route('/schedule')
 def scheduled_processes():
@@ -36,9 +65,10 @@ def scheduled_processes():
 @app.route('/subscribe', methods=['POST', 'GET'])
 def SubscribeToCourses():
 
-    email = request.form['email']
-    courses = request.form['courses']
+    email = request.form['email'].strip()
+    courses = request.form['courses'].strip()
     if not (email == '' or courses == ''):
+        print('courses string before findall is is:', courses)
         courses = re.findall('[^,]+', courses)
         print('courses is: ', courses)
         confirmed_courses = []
@@ -52,9 +82,10 @@ def SubscribeToCourses():
                 print('RETURNED MORE THAN ONE RESULT IN SUBSCRIBE QUERY')
             elif len(results) ==1:
                 print('successfuly found one result')
-                confirmed_courses.append(course)
                 if email not in results[0]['emails']:
                     results[0]['emails'].append(email)
+                    confirmed_courses.append(course)
+
                 datastore_client.put(results[0])
             elif len(results) == 0:
                 #PUT IN A 'DID YOU MEAN THIS' FILTER
@@ -98,7 +129,7 @@ def SubscribeToCourses():
                 return render_template('courselist.html', courses=user_entity['courses'], user=email)
     else:
         if request.form['page'] == 'index':
-            return render_template('index.html')
+            return redirect('/')
         #elif request.form['page'] == 'courselist':
         #    return render_template('courselist.html')
 

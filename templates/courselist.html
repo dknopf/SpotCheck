@@ -14,7 +14,7 @@
         <table class="courseTable">
             {% for course in courses %}
             <tr>
-                <td class="courseListText">{{ course }}</td>
+                <td class="courseListTextCell"><p class="courseListText">{{ course }}</p></td>
                 <td class="unsubscribeLink">
                     <a href="unsubscribe?user={{user}}&course={{course}}" class="standardLink">Unsubscribe</a>
                     <!--<form action="/unsubscribe" method="POST" class="unsubscribeBox">

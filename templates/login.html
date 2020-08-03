@@ -23,20 +23,21 @@
             <br />
             <br />
             <input type="text" name="email" id="email" />
+            <div class="errorDiv">
+                <p class="errorText">
+                    {% if tryAgain %}
+                    No user with given email exists, please try again!
+                    {% else %}
+                    <br />
+                    {% endif %}
+                </p>
+            </div>
             <br />
             <br />
             <br />
-            <input type="submit" value="See subscribed courses" class="bigBox" />
+            <input type="submit" value="See subscribed courses" class="bigBox" id="loginButton"/>
         </form>
-        <div class="noUser">
-            <p class="bottomText">
-                {% if tryAgain %}
-                No user with given email exists, please try again!
-                {% else %}
-                <br />
-                {% endif %}
-            </p>
-        </div>
+
         <br />
         <br />
         <form action="/" method="GET" class="homeButton">

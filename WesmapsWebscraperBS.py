@@ -20,7 +20,7 @@ def ScrapeMainPage():
     src = result.content
     soup = BeautifulSoup(src, 'lxml')
     links = soup.find_all('a', href=re.compile('subj_page'))
-    links = links[:6]
+    #links = links[:6]
     print('above multiprocessing')
     #num_p = mp.cpu_count()
     #print('num processors: ', num_p)
@@ -69,6 +69,11 @@ def ScrapeIndividualPage(link):
     #print(course_name, total_num_seats)
 
 def UpdateEntries(course, num_seats):
+    masterEntity = RetrieveMasterEntity(client)
+    if course not in masterEntity['courseList']:
+        masterEntity['courseList'].append(course)
+        client.put(masterEntity)
+
     print('made it into update entries for course: ', course)
     query = client.query(kind='course')
     print('made it past query')
@@ -82,7 +87,7 @@ def UpdateEntries(course, num_seats):
         print('got into len results =1 ')
         if results[0]['seats_avail'] == 0 and num_seats > 0:
             yag=yagmail.SMTP('spotcheckwes@gmail.com','SpotCheckWes1234!')
-            contents = ["Congrats, a spot has opened up in: " + course + 'Click here to see your subscribed courses/unsubscribe: www.spotcheck.space']
+            contents = ["Congrats, a spot has opened up in: " + course + '\n\nClick here to see your subscribed courses/unsubscribe: www.spotcheck.space']
 
             for email in results[0]['emails']:
                 yag.send(email, 'A spot has opened up in ' + course, contents)
@@ -104,6 +109,19 @@ def UpdateEntries(course, num_seats):
         client.put(new_entity)
         print('put new entity in: ', new_entity.key.name)
 
+
+def RetrieveMasterEntity(client):
+    query = client.query(kind='masterEntity')
+    print('made it past query')
+    results = list(query.fetch())
+    return results[0]
+
+def CreateMasterEntity(client):
+    masterEntity = datastore.Entity(key=client.key('masterEntity'))
+    masterEntity.update({
+        'courseList' : []
+        })
+    client.put(masterEntity)
 
 def StartFunction(datastore_client):
     global client

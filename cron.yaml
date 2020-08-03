@@ -1,1 +1,4 @@
 cron:
+- description: "populate masterEntity"
+  url: /schedule
+  schedule: every wednesday 15:43
