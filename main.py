@@ -74,24 +74,41 @@ def SubscribeToCourses():
         confirmed_courses = []
         for course in courses:
             course = course.strip()
-            query = datastore_client.query(kind='course')
-            query.key_filter((datastore_client.key('course', course)), '=')
-            print('made it past query key filter in subscribe. Key is: ', (datastore_client.key('course', course)))
-            results = list(query.fetch())
-            if len(results) > 1:
-                print('RETURNED MORE THAN ONE RESULT IN SUBSCRIBE QUERY')
-            elif len(results) ==1:
-                print('successfuly found one result')
-                if email not in results[0]['emails']:
-                    results[0]['emails'].append(email)
-                    confirmed_courses.append(course)
 
-                datastore_client.put(results[0])
-            elif len(results) == 0:
-                #PUT IN A 'DID YOU MEAN THIS' FILTER
-                print('no result found')
+            if re.search('^[A-Z&]{3,4}$', course): #Department
+                print('GOT INTO DEPARTMENT SECTION')
+                courses_to_add = []
+                for i in range(8):
+                    query = datastore_client.query(kind='course')
+                    query.add_filter('dept' + str(i), '=', course)
+                    courses_to_add+=list(query.fetch())
+                courses_added ={}
+                for course_to_add in courses_to_add:
+                    if email not in course_to_add['emails'] and course_to_add.key.name not in courses_added:
+                        course_to_add['emails'].append(email)
+                        courses_added[course_to_add.key.name] = '' #SHOULD PROBABLY TURN CONFIRMED COURSES INTO A DICT
+                        confirmed_courses.append(course_to_add.key.name)
 
-            print('made it past fetching query. Len query is: ', len(results))
+                    datastore_client.put(course_to_add)
+            else: #Individual course
+                query = datastore_client.query(kind='course')
+                query.key_filter((datastore_client.key('course', course)), '=')
+                print('made it past query key filter in subscribe. Key is: ', (datastore_client.key('course', course)))
+                results = list(query.fetch())
+                if len(results) > 1:
+                    print('RETURNED MORE THAN ONE RESULT IN SUBSCRIBE QUERY')
+                elif len(results) ==1:
+                    print('successfuly found one result')
+                    if email not in results[0]['emails']:
+                        results[0]['emails'].append(email)
+                        confirmed_courses.append(course)
+
+                    datastore_client.put(results[0])
+                elif len(results) == 0:
+                    #PUT IN A 'DID YOU MEAN THIS' FILTER
+                    print('no result found')
+
+                print('made it past fetching query. Len query is: ', len(results))
         user_query = datastore_client.query(kind='user')
         user_query.key_filter((datastore_client.key('user', email)), '=')
         user_results = list(user_query.fetch())

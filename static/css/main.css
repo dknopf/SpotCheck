@@ -1,13 +1,13 @@
 ﻿body, html {
     font-family: 'Karla' !important;
-    background-color: rgb(171, 202, 255);
+    background-image: linear-gradient(to bottom right, rgba(127, 127, 213, 0.8), rgba(134, 168, 231, 0.8), rgba(145, 234, 228, 0.8));
 }
 
 
 .modalBox {
     padding: 40px;
     border-radius: 20px;
-    width: 543px;
+    width: 568px;
     height: 561px;
     background-color: rgb(255,255,255);
     margin: 0;
@@ -39,6 +39,10 @@
     top: 100%;
     left: 0;
     right: 0;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 20px;
 }
 
 jQuery.ui.autocomplete.prototype._resizeMenu = function () {
@@ -137,7 +141,8 @@ label{
 }
 
 .bigBox {
-    background-color: rgb(72, 136, 245);
+    background-color: rgb(100, 104, 219);
+    /*background-color: rgb(72, 136, 245);*/
     border-radius: 10px;
     height: 43px;
     width: 543px;
@@ -150,6 +155,25 @@ label{
 }
 
 
+.outlineButton {
+    border: 2px solid rgb(100, 104, 219);
+    border-radius: 10px;
+    height: 43px;
+    width: 543px;
+    font-family: 'Karla';
+    color: rgb(100, 104, 219);
+    font-weight: bold;
+    font-size: 15px;
+    -webkit-appearance: none;
+    background-color: rgb(255,255,255);
+    border-radius: 10px;
+}
+
+
+.outlineButton:hover{
+    background-color: rgb(232, 234, 255);
+}
+
 .madeByText {
     text-align: center;
     width: 30%; 
@@ -158,11 +182,13 @@ label{
     right: 25%;
     bottom: 10px;
     font-size: 15px;
-    color: rgb(102, 158, 255);
+    color: rgb(70, 137, 174);
+    /*color: rgb(102, 158, 255);*/
 }
 
+
 .madeByLink {
-    color: rgb(102, 158, 255);
+    color: rgb(70, 137, 174);
 }
 
 .errorDiv{
@@ -173,8 +199,9 @@ label{
 }
 
 
-.homeButton{
-    position: fixed;
+.homeButton {
+    position: absolute;
+    color: rgb(100, 104, 219);
 }
 
 .bottomText {

@@ -4,6 +4,7 @@ import re
 import multiprocessing as mp
 from google.cloud import datastore
 import yagmail
+from datetime import datetime
 
 
 
@@ -19,13 +20,16 @@ def ScrapeMainPage():
     result = requests.get('https://owaprod-pub.wesleyan.edu/reg/!wesmaps_page.html')
     src = result.content
     soup = BeautifulSoup(src, 'lxml')
-    links = soup.find_all('a', href=re.compile('subj_page'))
+    other_header = soup.find('b', text='OTHER')
+    links = other_header.find_all_previous('a', href=re.compile('subj_page'))
     #links = links[:6]
     print('above multiprocessing')
     #num_p = mp.cpu_count()
     #print('num processors: ', num_p)
     print('got into if name is main in multiprocessing')
-    for link in links:
+    print('len links in main page is: ', len(links))
+    for i, link in enumerate(links):
+        print('now scraping link number: ', str(i), 'out of total num links: ', len(links))
         ScrapeSubjectPage(url_prefix + link.attrs['href'])
     #with mp.Pool(num_p) as pool:
     #    results = [pool.apply_async(ScrapeSubjectPage, args = (url_prefix + link.attrs['href'],)) for link in links]
@@ -51,25 +55,42 @@ def ScrapeSubjectPage(link):
 def ScrapeCoursesOfferedPage(link):
     offered_content = requests.get(link).content
     offered_soup = BeautifulSoup(offered_content, 'lxml')
-    links = offered_soup.find_all(href=re.compile('crse'))
+    spring = offered_soup.find('a', attrs={'name':'spring'})
+
+    links = spring.find_all_previous(href=re.compile('crse'))
+    #links = offered_soup.find_all(href=re.compile('crse'))
+    global linksScraped
     for link in links:
-        ScrapeIndividualPage(url_prefix + link.attrs['href'])
+        link_href = link.attrs['href']
+        #if not WasScrapedAlready(link):
+        if link_href not in linksScraped:
+            linksScraped[link_href] = 'Scraped'
+            print('Link not in dict in scrape courses offered is: ', link_href)
+            print(' linksScraped dict is: ', linksScraped)
+            ScrapeIndividualPage(url_prefix + link_href)
 
 def ScrapeIndividualPage(link):
     content = requests.get(link).content
     soup = BeautifulSoup(content, 'lxml')
     course_name = soup.find('span', class_='title').text
+    depts = soup.find_all('a', text=re.compile('^[A-Z&]{3,4}$'))
+    print('depts for: ', course_name, ' are: ', depts)
     seat_entries = soup.find_all('td', text = re.compile('Seats Available: '))
     total_num_seats = 0
     for entry in seat_entries:
         seats_avail = int(re.search('(?<=Seats Available: )-?\d+', entry.text).group(0))
         if seats_avail > 0:
                 total_num_seats += seats_avail
-    UpdateEntries(course_name, total_num_seats)
+    UpdateEntries(course_name, total_num_seats, depts, link)
     #print(course_name, total_num_seats)
 
-def UpdateEntries(course, num_seats):
+def UpdateEntries(course, num_seats, depts, link):
     masterEntity = RetrieveMasterEntity(client)
+    #UPDATE THE MASTER ENTITY LIST TO HAVE DEPTS JUST ONCE
+    for dept in depts:
+        if dept.text not in masterEntity['courseList']:
+            masterEntity['courseList'].append(dept.text)
+            client.put(masterEntity)
     if course not in masterEntity['courseList']:
         masterEntity['courseList'].append(course)
         client.put(masterEntity)
@@ -84,15 +105,22 @@ def UpdateEntries(course, num_seats):
     if len(results) > 1:
         print("GOT MORE THAN ONE RESULT IN QUERY")
     elif len(results) == 1:
-        print('got into len results =1 ')
+        print('got into len results = 1. Found a matching course')
+        """UPDATE DEPTS"""
+        for i, dept in enumerate(depts):
+                print('dept.text for course: ', course, ' is: ', dept.text)
+                results[0]['dept' + str(i)] = dept.text
+        results[0]['link'] = link
+        results[0]['date_scraped'] = datetime.utcnow()
+        client.put(results[0])
+
         if results[0]['seats_avail'] == 0 and num_seats > 0:
             yag=yagmail.SMTP('spotcheckwes@gmail.com','SpotCheckWes1234!')
-            contents = ["Congrats, a spot has opened up in: " + course + '\n\nClick here to see your subscribed courses/unsubscribe: www.spotcheck.space']
+            contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
 
             for email in results[0]['emails']:
                 yag.send(email, 'A spot has opened up in ' + course, contents)
-
-
+            
 
             results[0]['seats_avail'] = num_seats
             client.put(results[0])
@@ -106,9 +134,32 @@ def UpdateEntries(course, num_seats):
             'seats_avail' : num_seats,
             'emails' : []
             })
+        for i, dept in enumerate(depts):
+            new_entity['dept' + str(i)] = dept.text
+        new_entity['link'] = link
+        new_entity['date_scraped'] = datetime.utcnow()
+
+
         client.put(new_entity)
         print('put new entity in: ', new_entity.key.name)
 
+
+def WasScrapedAlready(link):
+    now = datetime.utcnow()
+    if now.minute < 10:
+        if now.hour == 0:
+            prev_time = now.replace(day=now.day-1, hour=23, minute=now.minute+50)
+        else:
+            prev_time=now.replace(hour=now.hour-1, minute=now.minute+50)
+    else:
+        prev_time= now.replace(minute=now.minute-10)
+    query = client.query(kind='course')
+    query.add_filter('date_scraped', '<', prev_time)
+    results = list(query.fetch())
+    if len(results) == 0:
+        return False
+    else:
+        return True
 
 def RetrieveMasterEntity(client):
     query = client.query(kind='masterEntity')
@@ -126,7 +177,12 @@ def CreateMasterEntity(client):
 def StartFunction(datastore_client):
     global client
     client = datastore_client
+    global linksScraped
+    linksScraped = {'Test' : 'Scraped'}
+    print('GOT INTO START FUNCTION AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
     ScrapeMainPage()
+
+
 
 #if __name__ == '__main__':
 #    print('GOT INTO IF NAME IS MAIN \n \n \n AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')

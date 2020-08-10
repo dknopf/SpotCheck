@@ -12,7 +12,7 @@
         <h1>Welcome to SpotCheck!</h1>
         <p class="main">
             To receive email alerts when a Wesleyan class becomes available during adjustment, enter your email and the classes you're
-            interested in below! <br /> <br />Separate the classes by comma, e.g. <i>Techiques of Fiction, Computer Science I, Advanced Tiny Hats</i>
+            interested in below! Enter a department abbrevation to subscribe to all classes in that department. <br /> <br />Separate the classes by comma, e.g. <i>Techiques of Fiction, COMP, AMST, Advanced Tiny Hats</i>
         </p>
         <!--<form action="/" method="POST">
             <input type="text" name="content" id="content" />
@@ -89,7 +89,7 @@
                     var results = $.ui.autocomplete.filter(
                         items, extractLast(request.term))
                     console.log(typeof results)
-                    response(results.slice(0,5));
+                    response(results.sort().slice(0,10));
                 },
                 focus: function () {
                     return false;
