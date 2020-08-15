@@ -4,8 +4,8 @@
 {% endblock %}
 
 {% block body %}
-<div class="content">
-    <div class="modalBox">
+<!--<div class="content">
+    <div class="modalBox">-->
 
 
         <h1>Your Subscribed Courses</h1>
@@ -16,33 +16,36 @@
             <input type="text" name="content" id="content" />
             <input type="submit" value="SCRAPE ME BABY" />
         </form>-->
-        <form action="/show_subscribed_courses" method="POST">
-            <input type="hidden" name="page" value="index" />
-            <br />
-            <label>Email address</label>
-            <br />
-            <br />
-            <input type="text" name="email" id="email" />
-            <div class="errorDiv">
-                <p class="errorText">
-                    {% if tryAgain %}
-                    No user with given email exists, please try again!
-                    {% else %}
-                    <br />
-                    {% endif %}
-                </p>
-            </div>
-            <br />
-            <br />
-            <br />
-            <input type="submit" value="See subscribed courses" class="bigBox" id="loginButton"/>
-        </form>
+        <div class="loginPageButtons">
+            <form action="/show_subscribed_courses" method="POST">
+                <input type="hidden" name="page" value="index" />
+                <br />
+                <label>Email address</label>
+                <br />
+                <br />
+                <input type="text" name="email" id="email" />
+                <div class="errorDiv">
+                    <p class="errorText">
+                        {% if tryAgain %}
+                        No user with given email exists, please try again!
+                        {% else %}
+                        <br />
+                        {% endif %}
+                    </p>
+                </div>
+                <br />
+                <br />
+                <br />
+                <input type="submit" value="See subscribed courses" class="bigBox" id="loginButton" />
+            </form>
 
-        <br />
-        <br />
-        <form action="/" method="GET" class="homeButton">
-            <input type="submit" value="Return to homepage" class="outlineButton" />
-        </form>
+
+            <br />
+            <br />
+            <form action="/" method="GET">
+                <input type="submit" value="Return to homepage" class="outlineButton" id="homeButton"/>
+            </form>
+        </div>
         <!--<div>
             <p>
                 To view the courses you are already subscribed to, enter your email below!
@@ -56,8 +59,8 @@
             <input type="submit" value="See subscribed courses" />
         </form>-->
 
-    </div>
-</div>
+    <!--</div>
+</div>-->
 <!--<div class="content">
     <h1 style="text-align: center">Task Master</h1>
     {% if tasks|length < 1 %}

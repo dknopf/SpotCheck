@@ -6,13 +6,42 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <meta property="og:image" content="http://www.spotcheck.space/favicon.png"></meta>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{{url_for('static', filename='js/jquery.toast.min.js')}}"></script>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/jquery.toast.min.css')}}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpotCheck</title>
     {% block head %} {% endblock %}
 </head>
-<body>
-    {% block body %} {% endblock %}
-    <div class="madeByText">
-        Built by <a href="https://www.linkedin.com/in/daniel-knopf-609/" class="madeByLink">Daniel Knopf</a> | Designed by <a href="https://www.zoereifel.com/" class="madeByLink">Zoe Reifel</a>
+{% if not request.MOBILE %}
+    {% set background_image='' %}
+{% else %}
+    {% set background_image='background: white!important;' %}
+{% endif %}
+
+<body style="{{background_image}}">
+    <div class="content">
+        <div class="modalBox">
+            <div class="modalBoxContent">
+
+
+                {% block body %} {% endblock %}
+
+            </div>
+            {% if request.MOBILE %}
+            <div class="madeByText">
+                Built by <a href="https://www.linkedin.com/in/daniel-knopf-609/" class="madeByLink">Daniel Knopf</a> | Designed by <a href="https://www.zoereifel.com/" class="madeByLink">Zoe Reifel</a>
+            </div>
+            {% endif %}
+        </div>
+        {% if not request.MOBILE %}
+        <div class="madeByText">
+            Built by <a href="https://www.linkedin.com/in/daniel-knopf-609/" class="madeByLink">Daniel Knopf</a> | Designed by <a href="https://www.zoereifel.com/" class="madeByLink">Zoe Reifel</a>
+        </div>
+        {% endif %}
     </div>
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root | tojson | safe }};
+    </script>
 </body>
 </html>

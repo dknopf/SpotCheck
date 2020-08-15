@@ -1,0 +1,275 @@
+﻿body, html {
+    font-family: 'Karla' !important;
+    background-image: linear-gradient(to bottom right, rgba(127, 127, 213, 0.8), rgba(134, 168, 231, 0.8), rgba(145, 234, 228, 0.8));
+}
+
+
+.modalBox {
+    padding: 40px;
+    border-radius: 20px;
+    width: 568px;
+    height: 561px;
+    background-color: rgb(255,255,255);
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 0px 20px rgba(108, 108, 108, .25);
+}
+
+
+
+.autocomplete {
+    /*the container must be positioned relative:*/
+    position: relative;
+    display: inline-block;
+}
+
+.ui-autocomplete {
+    width: 561px!important;
+    font-family: 'Karla'!important;
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 20px;
+}
+
+jQuery.ui.autocomplete.prototype._resizeMenu = function () {
+    var ul = this.menu.element;
+    ul .outerWidth(this.element.outerWidth());
+}
+
+.errorText{
+    color: red;
+    text-align: left;
+}
+
+
+#loginButton{
+    position: absolute;
+    bottom: 15%;
+}
+
+.homeButton {
+    position: absolute;
+    bottom: 5%;
+}
+
+.homePageForm{
+    position: absolute;
+}
+.modalBottomDiv{
+    position: absolute;
+    bottom: 3%;
+}
+
+#subscribeButton{
+    position: absolute;
+    top: 100%;
+}
+
+
+
+h2 {
+    font-size: 15px;
+    text-align: center;
+    color: rgb(137,137,137);
+}
+
+.main{
+    font-size: 20px;
+    color: rgb(137,137,137);
+}
+
+label{
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(39,39,39)
+}
+
+.testRow{
+    border: 3px solid black;
+}
+
+.unsubscribeLink {
+    position: absolute;
+    right: 20px;
+    /*background: none;
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+    cursor: pointer;*/
+    font-family: 'Karla';
+    font-size: 20px;
+    color: rgb(137,137,137) ;
+    /*background-color: rgb(72, 136, 245);
+    border-radius: 10px;
+    height: 20px;
+    width: 100px;
+    color: rgb(255,255,255);
+    border: none;*/
+}
+
+.courseListText{
+    font-weight: bold;
+    font-size: 20px;
+    width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.changePageButton {
+    border: 2px solid #898989;
+    border-radius: 10px;
+    height: 38px;
+    width: 72px;
+    font-family: 'Karla';
+    color: #898989;
+    font-weight: bold;
+    font-size: 13px;
+    -webkit-appearance: none;
+    background-color: rgb(255,255,255);
+    outline: none;
+}
+
+#prevPage {
+    background-image: url("/static/img/chevron-left.svg");
+    background-size: 13px;
+    background-position: 8px 10.5px;
+    background-repeat: no-repeat;
+    padding-left: 10px;
+}
+#nextPage {
+    background-image: url("/static/img/chevron-right.svg");
+    background-size: 13px;
+    background-position: 48px 10.5px;
+    background-repeat: no-repeat;
+    padding-right: 10px;
+}
+
+/*.unsubscribeLinkDiv {
+    position: absolute;
+    right: 20px;
+}*/
+
+.courseTable {
+    border-collapse: separate;
+    border-spacing: 0 20px;
+}
+
+.bigBox {
+    background-color: rgb(100, 104, 219);
+    /*background-color: rgb(72, 136, 245);*/
+    border-radius: 10px;
+    height: 43px;
+    width: 543px;
+    font-family: 'Karla';
+    color: rgb(255,255,255);
+    font-weight: bold;
+    font-size: 15px;
+    border: none;
+    -webkit-appearance: none;
+}
+
+
+.outlineButton {
+    border: 2px solid rgb(100, 104, 219);
+    border-radius: 10px;
+    height: 43px;
+    width: 543px;
+    font-family: 'Karla';
+    color: rgb(100, 104, 219);
+    font-weight: bold;
+    font-size: 15px;
+    -webkit-appearance: none;
+    background-color: rgb(255,255,255);
+    border-radius: 10px;
+    outline: none;
+}
+
+
+.outlineButton:hover{
+    background-color: rgb(232, 234, 255);
+}
+
+.madeByText {
+    text-align: center;
+    width: 30%; 
+    position: absolute;
+    left: 35%;
+    right: 25%;
+    bottom: 10px;
+    font-size: 15px;
+    color: rgb(70, 137, 174);
+    /*color: rgb(102, 158, 255);*/
+}
+
+
+.madeByLink {
+    color: rgb(70, 137, 174);
+}
+
+.errorDiv{
+}
+
+.standardLink {
+    color: rgb(137,137,137);
+}
+
+
+.homeButton {
+    position: absolute;
+    color: rgb(100, 104, 219);
+}
+
+.bottomText {
+    font-size: 19px;
+    color: rgb(137,137,137);
+}
+
+input[type=text] {
+    border: none;
+    border-bottom: 1px solid rgb(225, 231, 234);
+    width: 561px;
+}
+
+input[type=text]:focus{
+    outline: none;
+}
+
+input[type=text],
+select:focus,
+textarea {
+    font-size: 16px;
+}
+
+input{
+    font-family: 'Karla' !important;
+}
+
+
+@font-face {
+    font-family: 'Karla';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Karla'), local('Karla-Regular'), url(https://fonts.gstatic.com/s/karla/v13/qkBbXvYC6trAT7RVLtw.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+h1{
+    text-align:center;
+    font-size: 40px;
+}
+

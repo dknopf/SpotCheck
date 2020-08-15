@@ -50,7 +50,10 @@ def ScrapeSubjectPage(link):
     subj_soup = BeautifulSoup(subject_content, 'lxml')
     courses_offered_link = subj_soup.find(href=re.compile('offered=Y#fall')) #CHANGE THIS TO offered=Y#FALL IF NECESSARY
     #print(courses_offered_link.text)
-    ScrapeCoursesOfferedPage(url_prefix + courses_offered_link.attrs['href'])
+    try:
+        ScrapeCoursesOfferedPage(url_prefix + courses_offered_link.attrs['href'])
+    except:
+        pass
 
 def ScrapeCoursesOfferedPage(link):
     offered_content = requests.get(link).content
@@ -86,11 +89,12 @@ def ScrapeIndividualPage(link):
 
 def UpdateEntries(course, num_seats, depts, link):
     masterEntity = RetrieveMasterEntity(client)
-    #UPDATE THE MASTER ENTITY LIST TO HAVE DEPTS JUST ONCE
-    for dept in depts:
-        if dept.text not in masterEntity['courseList']:
-            masterEntity['courseList'].append(dept.text)
-            client.put(masterEntity)
+    #UPDATE THE MASTER ENTITY LIST TO HAVE DEPTS
+    #RERUN EVERY FEW MONTHS AT MOST
+    #for dept in depts:
+    #    if dept.text not in masterEntity['courseList']:
+    #        masterEntity['courseList'].append(dept.text)
+    #        client.put(masterEntity)
     if course not in masterEntity['courseList']:
         masterEntity['courseList'].append(course)
         client.put(masterEntity)
@@ -106,10 +110,11 @@ def UpdateEntries(course, num_seats, depts, link):
         print("GOT MORE THAN ONE RESULT IN QUERY")
     elif len(results) == 1:
         print('got into len results = 1. Found a matching course')
-        """UPDATE DEPTS"""
-        for i, dept in enumerate(depts):
-                print('dept.text for course: ', course, ' is: ', dept.text)
-                results[0]['dept' + str(i)] = dept.text
+        #RUN EVERY FEW MONTHS AT MOST
+        #"""UPDATE DEPTS"""
+        #for i, dept in enumerate(depts):
+        #        print('dept.text for course: ', course, ' is: ', dept.text)
+        #        results[0]['dept' + str(i)] = dept.text
         results[0]['link'] = link
         results[0]['date_scraped'] = datetime.utcnow()
         client.put(results[0])
@@ -119,11 +124,16 @@ def UpdateEntries(course, num_seats, depts, link):
             contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
 
             for email in results[0]['emails']:
-                yag.send(email, 'A spot has opened up in ' + course, contents)
+                try:
+                    yag.send(email, 'A spot has opened up in ' + course, contents)
+                    masterEntity['emailsSent'] += 1
+                except:
+                    pass
             
 
             results[0]['seats_avail'] = num_seats
             client.put(results[0])
+            client.put(masterEntity)
         elif results[0]['seats_avail']  != num_seats:
             results[0]['seats_avail'] = num_seats
             client.put(results[0])

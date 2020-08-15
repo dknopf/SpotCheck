@@ -4,41 +4,115 @@
 {% endblock %}
 
 {% block body %}
-<div class="content">
-    <div class="modalBox">
-        <h1>Your Subscribed Courses</h1>
-        <h2>{{user}}</h2>
+<!--<div class="content">
+    <div class="modalBox">-->
+<h1>Your Subscribed Courses</h1>
+<h2>{{user}}</h2>
         {% if courses|length < 1 %}
-        <h4 style="text-align: center">There are no courses, subscribe to one on the previous page</h4>
+<h4 style="text-align: center">There are no courses, subscribe to one on the previous page</h4>
         {% else %}
-        <table class="courseTable">
-            {% for course in courses %}
-            <tr>
-                <td class="courseListTextCell"><p class="courseListText">{{ course }}</p></td>
-                <td class="unsubscribeLink">
-                    <a href="unsubscribe?user={{user}}&course={{course}}" class="standardLink">Unsubscribe</a>
-                    <!--<form action="/unsubscribe" method="POST" class="unsubscribeBox">
-                        <input type="submit" value="Unsubscribe" class="unsubscribeLink" />
-                        <input type="hidden" name="course" value="{{ course }}" />
-                        <input type="hidden" name="user" value="{{ user }}" />
-                    </form>-->
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% endif %}
-        <!--<form action="/subscribe" method="POST">
-            <input type="hidden" name="page" value="courselist" />
-            <input type="hidden" name="email" value="{{user}}" />
-            <input type="text" name="courses" id="courses" />
-            <input type="submit" value="Subscribe to courses" />
-        </form>-->
-        <br />
-        <br />
+        {% set numPages = ((courses|length)//5)+(((1, (courses|length)%5))|min) %}
+<div class="tables">
 
-        <form action="/" method="POST">
-            <input type="submit" value="Subscribe to another course" class="bigBox"/>
-        </form>
-    </div>
+    {% for i in range(numPages) %}
+    <table class="courseTable" id="courseTable{{i}}">
+        {% for course in courses[0+5*i:(0+5*i)+5] %}
+        {% set cleanID = course.replace(' ','').replace(':','').replace(',', '').replace('(', '').replace(')','').replace('.', '').replace('&', '').replace("'", '').replace("!", '').replace("?", '').replace('/', '').replace('"', '')   %}
+        <tr id="{{cleanID}}Row">
+            <td class="courseListTextCell"><p class="courseListText">{{ course }}</p></td>
+            <!--<td class="courseListTextCell"><p class="courseListText"><a href="{{course['link']}}" class="standardLink" style="text-decoration: none;">{{ course }}</a></p></td>-->
+            <td class="unsubscribeLink">
+                <input type="hidden" name="user" id="{{cleanID}}User" value="{{user}}" />
+                <input type="hidden" name="course " id="{{cleanID}}Course" value="{{course}}" />
+                <input type="submit" onClick="unsubscribe(this.id)" id="{{cleanID}}Unsubscribe" value="Unsubscribe" class="unsubscribeButton" />
+
+                <!--<form action="unsubscribe">
+                <input type="hidden" name="user" value="{{user}}" />
+                <input type="hidden" name="course" value="{{course}}" />
+                <input type="submit" onClick="unsubscribe(this.id)" id="{{cleanID}}Unsubscribe" value="Unsubscribe" class="unsubscribeButton" />
+            </form>-->
+                <!--<a href="unsubscribe?user={{user}}&course={{course}}" class="standardLink" onclick="unsubscribe(this.id)" id="{{cleanID}}Unsubscribe">Unsubscribe</a>-->
+                <!--<form action="/unsubscribe" method="POST" class="unsubscribeBox">
+                <input type="submit" value="Unsubscribe" class="unsubscribeLink" />
+                <input type="hidden" name="course" value="{{ course }}" />
+                <input type="hidden" name="user" value="{{ user }}" />
+            </form>-->
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
 </div>
+<div class="changePageButtonDiv">
+    <button id="prevPage" class="changePageButton">Back</button>
+    <p id="pageNum" class="pageNumText">1/{{numPages}}</p>
+    <button id="nextPage" class="changePageButton">Next</button>
+</div>
+        {% endif %}
+<br />
+<br />
+<div class="courseListHomeButton">
+    <form action="/" method="POST">
+        <input type="submit" value="Return to homepage" class="bigBox" id="courseListHomeButton" />
+    </form>
+</div>
+
+<script>
+    function unsubscribe(id) {
+        $.toast({
+            text: 'Unsubscribed!',
+            bgColor: 'green',
+            position: 'top-center',
+            icon: 'success',
+            showHideTransition: 'slide',
+            loader: false,
+            stack: 2,
+        });
+        var myUser = 'input[id="' + id.substring(0, id.length - 11) + 'User"]';
+        var myCourse = 'input[id="' + id.substring(0, id.length - 11) + 'Course"]';
+        console.log(myUser);
+        $.getJSON($SCRIPT_ROOT + '/unsubscribe', {
+            user: $(myUser).val(),
+            course: $(myCourse).val()
+        }, function (data) {
+            return false;
+        });
+        console.log(id);
+        var myId = "#" + id.substring(0, id.length - 11) + "Row";
+        console.log(myId);
+        $(myId).hide();
+    }
+
+    $(document).ready(function () {
+        $("#prevPage").hide();
+        $(".tables table").each(function (e) {
+            if (e != 0)
+                $(this).hide();
+        });
+        $("#nextPage").click(function () {
+            if ($(".tables table:visible").next().length != 0) {
+                $("#prevPage").show();
+                $(".tables table:visible").next().show().prev().hide();
+                $("#pageNum").text((parseInt($("#pageNum").text().substring(0, 1)) + 1) + $("#pageNum").text().substring(1, ));
+                if ($(".tables table:visible").next().length == 0) {
+                    $("#nextPage").hide();
+                }
+            }
+            return false;
+        });
+
+        $("#prevPage").click(function () {
+            if ($(".tables table:visible").prev().length != 0) {
+                $("#nextPage").show();
+                $(".tables table:visible").prev().show().next().hide();
+                $("#pageNum").text((parseInt($("#pageNum").text().substring(0, 1)) - 1) + $("#pageNum").text().substring(1, ));
+
+                if ($(".tables table:visible").prev().length == 0) {
+                    $("#prevPage").hide();
+                }
+            }
+            return false;
+        });
+    });
+</script>
 {% endblock %}

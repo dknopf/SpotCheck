@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_mobility import Mobility
 from datetime import datetime
 from google.cloud import datastore
 from WesmapsWebscraperBS import StartFunction
@@ -13,6 +14,7 @@ datastore_client = datastore.Client()
 
 
 app = Flask(__name__)
+Mobility(app)
 
 #@app.route('/CreateME')
 #def RetrieveMasterEntity():
@@ -39,9 +41,11 @@ def autocomplete():
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    status = request.args.get('status', None)
+
     print('got into index!')
     GetCourseList()
-    return render_template('index.html', course_list=course_list)
+    return render_template('index.html', course_list=course_list, status=status)
     #if request.method == 'POST':
 
     #    StartFunction(datastore_client)
@@ -65,7 +69,7 @@ def scheduled_processes():
 @app.route('/subscribe', methods=['POST', 'GET'])
 def SubscribeToCourses():
 
-    email = request.form['email'].strip()
+    email = request.form['email'].strip().lower()
     courses = request.form['courses'].strip()
     if not (email == '' or courses == ''):
         print('courses string before findall is is:', courses)
@@ -73,6 +77,7 @@ def SubscribeToCourses():
         print('courses is: ', courses)
         confirmed_courses = []
         for course in courses:
+            course=re.sub('  ', ', ', course)
             course = course.strip()
 
             if re.search('^[A-Z&]{3,4}$', course): #Department
@@ -137,16 +142,23 @@ def SubscribeToCourses():
         #s.send_message(msg)
         #s.quit()
         ##os.system("curl https://intoli.com/install-google-chrome.sh | bash")
-        if request.form['page'] == 'index':
-            return redirect('/')
-        elif request.form['page'] == 'courselist':
-            if len(user_results) == 1:
-                return render_template('courselist.html', courses=user_results[0]['courses'], user=email)
-            else:
-                return render_template('courselist.html', courses=user_entity['courses'], user=email)
+        if len(confirmed_courses) > 0:
+            print('got into confirmed courses greater than 1')
+            return redirect(url_for('index', status='success'))
+
+            #if request.form['page'] == 'index':
+        else:
+            return redirect(url_for('index', status='failure'))
+
+        # NOT NECESSARY BC YOU CAN NO LONGER SUBSCRIBE FROM COURSELIST PAGE
+        #elif request.form['page'] == 'courselist':
+        #    if len(user_results) == 1:
+        #        return render_template('courselist.html', courses=user_results[0]['courses'], user=email)
+        #    else:
+        #        return render_template('courselist.html', courses=user_entity['courses'], user=email)
     else:
         if request.form['page'] == 'index':
-            return redirect('/')
+            return redirect(url_for('index', status='noEntry'))
         #elif request.form['page'] == 'courselist':
         #    return render_template('courselist.html')
 
@@ -158,7 +170,7 @@ def login():
 
 @app.route('/show_subscribed_courses', methods = ['POST', 'GET'])
 def ShowSubscribedCourses():
-    user = request.form['email']
+    user = request.form['email'].strip().lower()
     if user == '':
         return render_template('login.html', tryAgain=True) #Add feedback here
     query = datastore_client.query(kind='user')
@@ -176,12 +188,17 @@ def unsubscribe():
     user = request.args.get('user', None)
     course = request.args.get('course', None)
     user_entity = datastore_client.get(datastore_client.key('user', user))
-    user_entity['courses'].remove(course)
-    datastore_client.put(user_entity)
-    course_entity = datastore_client.get(datastore_client.key('course', course))
-    course_entity['emails'].remove(user)
-    datastore_client.put(course_entity)
-    return render_template('courselist.html', courses = user_entity['courses'], user=user)
+    try:
+        user_entity['courses'].remove(course)
+        datastore_client.put(user_entity)
+        course_entity = datastore_client.get(datastore_client.key('course', course))
+        course_entity['emails'].remove(user)
+        datastore_client.put(course_entity)
+    except:
+        print('got into except for unsubscribing on course: ', course, "and user: ", user)
+        pass
+    return '', 204
+    #return render_template('courselist.html', courses = user_entity['courses'], user=user)
 
 #@app.route('/unsubscribe', methods=['POST'])
 #def Unsubscribe():
