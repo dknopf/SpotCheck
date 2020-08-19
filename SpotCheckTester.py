@@ -54,28 +54,45 @@ def scrape():
 
 def ScrapeIndividualPage(department):
     global webdriver_list
+    driver = webdriver.Chrome(executable_path=path, options=options)
+    webdriver_list.append(driver)
+
     try:
-        print('got into try')
-        driver = webdriver.Chrome(executable_path=path, options=options)
-        print('made it past making the driver')
-        webdriver_list.append(driver)
-        print('before driver.get')
-        driver.get('https://www.spotcheck.space/')
-        print('passed driver.get')
-        emailInput = driver.find_element(By.XPATH, '//input[@id="email"]')
-        emailInput.send_keys("SELENIUM_TEST_" + department[0] + "1")
-        courseInput = driver.find_element(By.XPATH, '//input[@id="autocomplete"]')
-        courseInput.send_keys(department)
-        subscribeButton = driver.find_element(By.XPATH, '//input[@id="subscribeButton"]')
-        subscribeButton.click()
-        print('start time for depts: ', department, 'is', time.time())
-        print('got to end of try')
+        Subscribe(driver, department)
+        Unsubscribe(driver, department)
         driver.quit()
     except:
         print('got into except')
         quit_webdrivers()
         raise
 
+def Subscribe(driver, department):
+    driver.get('https://www.spotcheck.space/')
+    print('passed driver.get')
+    emailInput = driver.find_element(By.XPATH, '//input[@id="email"]')
+    emailInput.send_keys("SELENIUM_TEST_" + department[0] + "1")
+    courseInput = driver.find_element(By.XPATH, '//input[@id="autocomplete"]')
+    courseInput.send_keys(department)
+    subscribeButton = driver.find_element(By.XPATH, '//input[@id="subscribeButton"]')
+    subscribeButton.click()
+
+def Unsubscribe(driver, department):
+    print('got into unsubscribe')
+
+    driver.get("https://www.spotcheck.space/login?")
+    emailInput = driver.find_element(By.XPATH, '//input[@id="email"]')
+    print('found email input')
+    emailInput.send_keys("SELENIUM_TEST_" + department[0] + "1")
+    print('sent keys')
+    emailInput.submit()
+    print('submitted')
+
+    unsubscribeLinks = driver.find_elements(By.XPATH, '//input[@class="unsubscribeButton"]')
+    print('len unsubscribe links for: ', "SELENIUM_TEST_" + department[0] + "1", len(unsubscribeLinks))
+    for link in unsubscribeLinks:
+        print('link is: ', link.get_attribute("id"))
+        link.click()
+    print('finished unsubscribe')
 if __name__ == '__main__':
 
     scrape()

@@ -93,6 +93,12 @@ h2 {
 
 }
 
+@media (hover: none){
+    .modalBox {
+        box-shadow: none!important;
+    }
+}
+
 .modalBoxContent {
     position: absolute;
     width: calc(100% - 80px);
@@ -340,7 +346,7 @@ label {
     position: absolute;
     background-image: url("/static/img/chevron-left.svg");
     background-size: 13px;
-    background-position: 8px 10.5px;
+    background-position: 7px 10.5px;
     background-repeat: no-repeat;
     padding-left: 10px;
 }

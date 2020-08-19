@@ -11,13 +11,15 @@
         {% if courses|length < 1 %}
 <h4 style="text-align: center">There are no courses, subscribe to one on the previous page</h4>
         {% else %}
+<h4 style="text-align: center; display: none">There are no courses, subscribe to one on the previous page</h4>
+
         {% set numPages = ((courses|length)//5)+(((1, (courses|length)%5))|min) %}
 <div class="tables">
 
     {% for i in range(numPages) %}
     <table class="courseTable" id="courseTable{{i}}">
         {% for course in courses[0+5*i:(0+5*i)+5] %}
-        {% set cleanID = course.replace(' ','').replace(':','').replace(',', '').replace('(', '').replace(')','').replace('.', '').replace('&', '').replace("'", '').replace("!", '').replace("?", '').replace('/', '').replace('"', '')   %}
+        {% set cleanID = course.replace(' ','').replace(':','').replace(',', '').replace('(', '').replace(')','').replace('.', '').replace('&', '').replace("'", '').replace("!", '').replace("?", '').replace('/', '').replace('"', '').replace('-', '')   %}
         <tr id="{{cleanID}}Row">
             <td class="courseListTextCell"><p class="courseListText">{{ course }}</p></td>
             <!--<td class="courseListTextCell"><p class="courseListText"><a href="{{course['link']}}" class="standardLink" style="text-decoration: none;">{{ course }}</a></p></td>-->
@@ -27,20 +29,20 @@
                 <input type="submit" onClick="unsubscribe(this.id)" id="{{cleanID}}Unsubscribe" value="Unsubscribe" class="unsubscribeButton" />
 
                 <!--<form action="unsubscribe">
-                <input type="hidden" name="user" value="{{user}}" />
-                <input type="hidden" name="course" value="{{course}}" />
-                <input type="submit" onClick="unsubscribe(this.id)" id="{{cleanID}}Unsubscribe" value="Unsubscribe" class="unsubscribeButton" />
-            </form>-->
+                    <input type="hidden" name="user" value="{{user}}" />
+                    <input type="hidden" name="course" value="{{course}}" />
+                    <input type="submit" onClick="unsubscribe(this.id)" id="{{cleanID}}Unsubscribe" value="Unsubscribe" class="unsubscribeButton" />
+                </form>-->
                 <!--<a href="unsubscribe?user={{user}}&course={{course}}" class="standardLink" onclick="unsubscribe(this.id)" id="{{cleanID}}Unsubscribe">Unsubscribe</a>-->
                 <!--<form action="/unsubscribe" method="POST" class="unsubscribeBox">
-                <input type="submit" value="Unsubscribe" class="unsubscribeLink" />
-                <input type="hidden" name="course" value="{{ course }}" />
-                <input type="hidden" name="user" value="{{ user }}" />
-            </form>-->
+                    <input type="submit" value="Unsubscribe" class="unsubscribeLink" />
+                    <input type="hidden" name="course" value="{{ course }}" />
+                    <input type="hidden" name="user" value="{{ user }}" />
+                </form>-->
             </td>
         </tr>
-        {% endfor %}
-    </table>
+        {% endfor %}
+    </table>
     {% endfor %}
 </div>
 <div class="changePageButtonDiv">
@@ -56,17 +58,24 @@
         <input type="submit" value="Return to homepage" class="bigBox" id="courseListHomeButton" />
     </form>
 </div>
-
+{% if request.MOBILE %}
+    {% set successTextColor = '#288807' %}
+    {% set successBgColor = 'rgb(127, 209, 99)' %}
+{% else %}
+    {% set successTextColor = '#272727' %}
+    {% set successBgColor = 'rgba(238, 238, 238, 0.4)' %}
+{% endif %}
 <script>
     function unsubscribe(id) {
         $.toast({
-            text: 'Unsubscribed!',
-            bgColor: 'green',
+            text: "<p class='toastText' id='success'>Unsubscribed!</p>",
+            bgColor: '{{successBgColor}}',
+            textColor: '{{successTextColor}}',
             position: 'top-center',
             icon: 'success',
             showHideTransition: 'slide',
             loader: false,
-            stack: 2,
+            stack: 1,
         });
         var myUser = 'input[id="' + id.substring(0, id.length - 11) + 'User"]';
         var myCourse = 'input[id="' + id.substring(0, id.length - 11) + 'Course"]';
@@ -78,9 +87,45 @@
             return false;
         });
         console.log(id);
-        var myId = "#" + id.substring(0, id.length - 11) + "Row";
+        var myId = id.substring(0, id.length - 11) + "Row";
         console.log(myId);
-        $(myId).hide();
+        var row = document.getElementById(myId);
+        row.parentNode.removeChild(row);
+        //var myTable = document.getElementById("courseTable" + (parseInt($("#pageNum").text()) - 1));
+        var myTableRows = $(".tables table:visible tr");
+        var myTable = $("table:visible");
+        console.log(myTable);
+        if (myTableRows.length == 0) {
+            if ($(".tables table:visible").next().length != 0) {
+                $(".tables table:visible").next().show();
+                var numText = $("#pageNum").text();
+
+                $("#pageNum").text((parseInt(numText.substring(0, numText.indexOf("/")))) + "/" + (parseInt(numText.substring(numText.indexOf("/") + 1)) - 1));
+            }
+            else if ($(".tables table:visible").prev().length != 0) {
+                $(".tables table:visible").prev().show();
+                var numText = $("#pageNum").text();
+
+                $("#pageNum").text((parseInt(numText.substring(0, numText.indexOf("/"))) - 1) + "/" + (parseInt(numText.substring(numText.indexOf("/") + 1)) - 1));
+            }
+            else {
+                $("h4").show();
+                $("#prevPage").hide();
+                $("#nextPage").hide();
+                $("#pageNum").hide();
+
+            }
+            myTable.remove();
+
+        }
+        //$(myId).hide();
+
+
+        //console.log(id);
+        //var myId = "#" + id.substring(0, id.length - 11) + "Row";
+        //console.log(myId);
+
+        //$(myId).hide();
     }
 
     $(document).ready(function () {
@@ -93,7 +138,8 @@
             if ($(".tables table:visible").next().length != 0) {
                 $("#prevPage").show();
                 $(".tables table:visible").next().show().prev().hide();
-                $("#pageNum").text((parseInt($("#pageNum").text().substring(0, 1)) + 1) + $("#pageNum").text().substring(1, ));
+                var numText = $("#pageNum").text();
+                $("#pageNum").text((parseInt(numText.substring(0, numText.indexOf("/"))) + 1) + numText.substring(numText.indexOf("/")));
                 if ($(".tables table:visible").next().length == 0) {
                     $("#nextPage").hide();
                 }
@@ -105,7 +151,8 @@
             if ($(".tables table:visible").prev().length != 0) {
                 $("#nextPage").show();
                 $(".tables table:visible").prev().show().next().hide();
-                $("#pageNum").text((parseInt($("#pageNum").text().substring(0, 1)) - 1) + $("#pageNum").text().substring(1, ));
+                var numText = $("#pageNum").text();
+                $("#pageNum").text((parseInt(numText.substring(0, numText.indexOf("/"))) - 1) + numText.substring(numText.indexOf("/")));
 
                 if ($(".tables table:visible").prev().length == 0) {
                     $("#prevPage").hide();

@@ -72,10 +72,24 @@ def SubscribeToCourses():
     email = request.form['email'].strip().lower()
     courses = request.form['courses'].strip()
     if not (email == '' or courses == ''):
+        user_query = datastore_client.query(kind='user')
+        user_query.key_filter((datastore_client.key('user', email)), '=')
+        user_results = list(user_query.fetch())
+        print('len user results is', len(user_results))
+        if len(user_results) == 0:
+            user_entity = datastore.Entity(key=datastore_client.key('user', email))
+            user_entity.update({
+                'courses' : []
+                })
+            datastore_client.put(user_entity)
+        elif len(user_results) == 1:
+            user_entity = user_results[0]
         print('courses string before findall is is:', courses)
         courses = re.findall('[^,]+', courses)
         print('courses is: ', courses)
         confirmed_courses = []
+        courses_added = {}
+
         for course in courses:
             course=re.sub('  ', ', ', course)
             course = course.strip()
@@ -87,14 +101,25 @@ def SubscribeToCourses():
                     query = datastore_client.query(kind='course')
                     query.add_filter('dept' + str(i), '=', course)
                     courses_to_add+=list(query.fetch())
-                courses_added ={}
                 for course_to_add in courses_to_add:
-                    if email not in course_to_add['emails'] and course_to_add.key.name not in courses_added:
+                    if course_to_add.key.name not in user_entity['courses']:
+                        user_entity['courses'].append(course_to_add.key.name)
+                        courses_added[course_to_add.key.name] = ''
+                    if email not in course_to_add['emails']:
                         course_to_add['emails'].append(email)
-                        courses_added[course_to_add.key.name] = '' #SHOULD PROBABLY TURN CONFIRMED COURSES INTO A DICT
-                        confirmed_courses.append(course_to_add.key.name)
+                        courses_added[course_to_add.key.name] = ''
 
-                    datastore_client.put(course_to_add)
+
+                    #if email not in course_to_add['emails'] and course_to_add.key.name not in courses_added:
+                    #    course_to_add['emails'].append(email)
+                    #    courses_added[course_to_add.key.name] = '' #SHOULD PROBABLY TURN CONFIRMED COURSES INTO A DICT
+                    #    confirmed_courses.append(course_to_add.key.name)
+                    #else:
+                    #    print('email: ', email, 'is in emails list of: ', course_to_add.key.name)
+                    #    print('courses_added is: ', courses_added)
+                #datastore_client.put_multi(courses_to_add)
+                    datastore_client.put(course_to_add) #MAKE THIS INTO PUT MULTI
+
             else: #Individual course
                 query = datastore_client.query(kind='course')
                 query.key_filter((datastore_client.key('course', course)), '=')
@@ -106,7 +131,11 @@ def SubscribeToCourses():
                     print('successfuly found one result')
                     if email not in results[0]['emails']:
                         results[0]['emails'].append(email)
-                        confirmed_courses.append(course)
+                        courses_added[course] = ''
+                        #confirmed_courses.append(course)
+                    if course not in user_entity['courses']:
+                        user_entity['courses'].append(course)
+                        courses_added[course] = ''
 
                     datastore_client.put(results[0])
                 elif len(results) == 0:
@@ -114,25 +143,31 @@ def SubscribeToCourses():
                     print('no result found')
 
                 print('made it past fetching query. Len query is: ', len(results))
-        user_query = datastore_client.query(kind='user')
-        user_query.key_filter((datastore_client.key('user', email)), '=')
-        user_results = list(user_query.fetch())
-        print('len user results is', len(user_results))
-        if len(user_results) == 0:
-            user_entity = datastore.Entity(key=datastore_client.key('user', email))
-            user_entity.update({
-                'courses' : [course for course in confirmed_courses]
-                })
-            datastore_client.put(user_entity)
-        elif len(user_results) == 1:
 
-            print('confirmed courses is: ', confirmed_courses)
-            user_results[0]['courses'] += confirmed_courses
-            print(user_results[0])
+        datastore_client.put(user_entity)
+        
 
-            datastore_client.put(user_results[0])
-        elif len(user_results) > 1:
-            print('THERE ARE MORE THAN ONE USERS RETURNED FOR USER SEARCH')
+
+
+        #user_query = datastore_client.query(kind='user')
+        #user_query.key_filter((datastore_client.key('user', email)), '=')
+        #user_results = list(user_query.fetch())
+        #print('len user results is', len(user_results))
+        #if len(user_results) == 0:
+        #    user_entity = datastore.Entity(key=datastore_client.key('user', email))
+        #    user_entity.update({
+        #        'courses' : [course for course in confirmed_courses]
+        #        })
+        #    datastore_client.put(user_entity)
+        #elif len(user_results) == 1:
+
+        #    print('confirmed courses is: ', confirmed_courses)
+        #    user_results[0]['courses'] += confirmed_courses
+        #    print(user_results[0])
+
+        #    datastore_client.put(user_results[0])
+        #elif len(user_results) > 1:
+        #    print('THERE ARE MORE THAN ONE USERS RETURNED FOR USER SEARCH')
         #msg = EmailMessage()
         #msg.set_content('Hello, World')
         #msg['Subject'] = "THIS IS  A TEST EMAIL"
@@ -142,7 +177,7 @@ def SubscribeToCourses():
         #s.send_message(msg)
         #s.quit()
         ##os.system("curl https://intoli.com/install-google-chrome.sh | bash")
-        if len(confirmed_courses) > 0:
+        if len(courses_added) > 0:
             print('got into confirmed courses greater than 1')
             return redirect(url_for('index', status='success'))
 
@@ -189,14 +224,28 @@ def unsubscribe():
     course = request.args.get('course', None)
     user_entity = datastore_client.get(datastore_client.key('user', user))
     try:
+        if user_entity['courses'].count(course) > 1:
+            print('THERE IS MORE THAN ONE OCCURENCE BEFORE REMOVING OF COURSE: ', course, 'IN USER: ', user)
+            print(user_entity['courses'])
         user_entity['courses'].remove(course)
+        if (course in user_entity['courses']):
+            print('COURSE: ', course, 'STILL IN USER_ENTITY COURSES')
+        #print('got past user_entity removing course')
         datastore_client.put(user_entity)
+
+
         course_entity = datastore_client.get(datastore_client.key('course', course))
-        course_entity['emails'].remove(user)
+        #print('got past querying course entity')
+        try:
+            course_entity['emails'].remove(user)
+            #print('got past removing email from course')
+        except Exception as inst:
+            print('Error: ', str(inst), 'when removing course: ', course, 'for user: ', user)
         datastore_client.put(course_entity)
-    except:
-        print('got into except for unsubscribing on course: ', course, "and user: ", user)
-        pass
+        #datastore_client.put_multi([user_entity, course_entity])
+        #print('got past updating client')
+    except Exception as inst:
+        print('got into exception: ', str(inst), 'for unsubscribing on course: ', course, "and user: ", user)
     return '', 204
     #return render_template('courselist.html', courses = user_entity['courses'], user=user)
 

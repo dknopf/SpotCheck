@@ -55,14 +55,27 @@
 <script src="//code.jquery.com/jquery-1.9.1.js"></script>
 <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script src="{{url_for('static', filename='js/jquery.toast.min.js')}}"></script>
+{% if request.MOBILE %}
+    {% set successTextColor = '#288807' %}
+    {% set successBgColor = 'rgb(127, 209, 99)' %}
+    {% set failureTextColor = '#CA0000' %}
+    {% set failureBgColor = 'rgb(235, 144, 144)' %}
+{% else %}
+    {% set successTextColor = '#272727' %}
+    {% set successBgColor = 'rgba(238, 238, 238, 0.4)' %}
+    {% set failureTextColor = '#CA0000' %}
+    {% set failureBgColor = 'rgba(238, 238, 238, 0.4)' %}
+{% endif %}
+
 <script>
+
     $(document).ready(function () {
         console.log("{{status}}");
         if ("{{status}}" == 'success') {
             $.toast({
                 text: "<p class='toastText' id='success'>Subscribed!</p>",
-                bgColor: 'rgba(238, 238, 238, 0.4)',
-                textColor: '#272727',
+                bgColor: '{{successBgColor}}',
+                textColor: '{{successTextColor}}',
                 opacity: '0.4',
                 position: 'top-center',
                 icon: 'success',
@@ -73,8 +86,9 @@
         if ("{{status}}" == 'failure') {
             $.toast({
                 text: "<p class='toastText' id='failure'>Failed to add courses. Please select from dropdown menu.</p>",
-                bgColor: '#rgba(238, 238, 238, 0.4)',
+                bgColor: '{{failureBgColor}}',
                 position: 'top-center',
+                textColor: '{{failureTextColor}}',
                 icon: 'error',
                 showHideTransition: 'slide',
                 loader: false,

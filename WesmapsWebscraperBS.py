@@ -121,11 +121,11 @@ def UpdateEntries(course, num_seats, depts, link):
 
         if results[0]['seats_avail'] == 0 and num_seats > 0:
             yag=yagmail.SMTP('spotcheckwes@gmail.com','SpotCheckWes1234!')
-            contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
+            contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
 
             for email in results[0]['emails']:
                 try:
-                    yag.send(email, 'A spot has opened up in ' + course, contents)
+                    yag.send(email, 'A Spot is Open in ' + course, contents)
                     masterEntity['emailsSent'] += 1
                 except:
                     pass

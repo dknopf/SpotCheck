@@ -1,4 +1,4 @@
 cron:
-- description: "populate masterEntity"
+- description: "Check for class openings"
   url: /schedule
-  schedule: every wednesday 15:43
+  schedule: every 5 minutes
