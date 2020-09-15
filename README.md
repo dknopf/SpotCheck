@@ -1,0 +1,2 @@
+# SpotCheck
+The SpotCheck webapp alerts you if space in a class you want opens up during Wesleyan schedule adjustment. Simply put your email and the classes you're interested in on the subscribe page and click enter and you will receive an email when a spot opens up!
