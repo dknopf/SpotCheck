@@ -249,6 +249,11 @@ def unsubscribe():
     return '', 204
     #return render_template('courselist.html', courses = user_entity['courses'], user=user)
 
+
+@app.route('/test.js', methods=['GET'])
+def GetTestJS():
+    return render_template('testJS.html')
+
 #@app.route('/unsubscribe', methods=['POST'])
 #def Unsubscribe():
 #    if request.method == 'POST':

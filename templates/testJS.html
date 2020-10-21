@@ -1,0 +1,19 @@
+
+{% block head %}
+<script data-ad-client="ca-pub-2297789040687499" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+
+
+{% endblock %}
+
+{% block body %}
+document.getElementById("locationButton").onclick = GetLocation;
+  function GetLocation(){
+    navigator.geolocation.getCurrentPosition(showPosition) 
+    function showPosition(position) 
+      { 
+      document.getElementById("h2ID").innerHTML = position.coords.latitude;
+      console.log(position.coords.latitude);
+      }
+  }
+
+{% endblock %}

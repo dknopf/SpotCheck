@@ -1,4 +1,1 @@
 cron:
-- description: "Check for class openings"
-  url: /schedule
-  schedule: every 5 minutes
