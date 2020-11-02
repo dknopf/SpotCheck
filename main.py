@@ -10,6 +10,8 @@ import smtplib, ssl
 import yagmail
 import re
 
+from Refresh import Refresh
+
 datastore_client = datastore.Client()
 
 
@@ -45,6 +47,7 @@ def index():
 
     print('got into index!')
     GetCourseList()
+
     return render_template('index.html', course_list=course_list, status=status)
     #if request.method == 'POST':
 
@@ -58,11 +61,14 @@ def GetCourseList():
     results = list(query.fetch())
     global course_list
     course_list = results[0]['courseList']
+    """
+    figure out how to reference the semester between multiple files
+    """
 
 @app.route('/schedule')
 def scheduled_processes():
     StartFunction(datastore_client)
-    return 'Hopefully this never appears'
+    return 'Hopefully this never returns'
 
 
 
@@ -253,6 +259,15 @@ def unsubscribe():
 @app.route('/test.js', methods=['GET'])
 def GetTestJS():
     return render_template('testJS.html')
+
+
+@app.route('/update_courses', methods=['GET'])
+def UpdateCourses():
+    Refresh(datastore_client)
+    # ClearUsers()
+    # CreateMasterEntity()
+    #RefreshCourses
+
 
 #@app.route('/unsubscribe', methods=['POST'])
 #def Unsubscribe():

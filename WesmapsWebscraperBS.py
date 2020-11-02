@@ -14,6 +14,13 @@ class_dict = {}
 
 url_prefix = 'https://owaprod-pub.wesleyan.edu/reg/'
 
+semester = "spring"
+year = "2021"
+
+courseList = "courseList" + semester.title() + year
+emailsSent = "emailsSent" + semester.title() + year
+
+
 #print(src)
 def ScrapeMainPage():
     print('\n \n got into scrape main page \n \n')
@@ -22,7 +29,7 @@ def ScrapeMainPage():
     soup = BeautifulSoup(src, 'lxml')
     other_header = soup.find('b', text='OTHER')
     links = other_header.find_all_previous('a', href=re.compile('subj_page'))
-    #links = links[:6]
+    # links = links[:1]
     print('above multiprocessing')
     #num_p = mp.cpu_count()
     #print('num processors: ', num_p)
@@ -48,7 +55,10 @@ def ScrapeSubjectPage(link):
     print('\n got into scrape subject page at link: ', link, '\n')
     subject_content = requests.get(link).content
     subj_soup = BeautifulSoup(subject_content, 'lxml')
-    courses_offered_link = subj_soup.find(href=re.compile('offered=Y#fall')) #CHANGE THIS TO offered=Y#FALL IF NECESSARY
+    """
+    Another place with fall/spring specific content
+    """
+    courses_offered_link = subj_soup.find(href=re.compile('offered=Y#' + semester)) #CHANGE THIS TO offered=Y#FALL IF NECESSARY
     #print(courses_offered_link.text)
     try:
         ScrapeCoursesOfferedPage(url_prefix + courses_offered_link.attrs['href'])
@@ -58,9 +68,13 @@ def ScrapeSubjectPage(link):
 def ScrapeCoursesOfferedPage(link):
     offered_content = requests.get(link).content
     offered_soup = BeautifulSoup(offered_content, 'lxml')
+    """
+    ADD SUPPORT HERE TO AUTOMATICALLY DETECT SEMESTER
+    Right now the change is based on spring.find_all_previous vs find_all_next
+    """
     spring = offered_soup.find('a', attrs={'name':'spring'})
 
-    links = spring.find_all_previous(href=re.compile('crse'))
+    links = spring.find_all_next(href=re.compile('crse'))
     #links = offered_soup.find_all(href=re.compile('crse'))
     global linksScraped
     for link in links:
@@ -91,12 +105,12 @@ def UpdateEntries(course, num_seats, depts, link):
     masterEntity = RetrieveMasterEntity(client)
     #UPDATE THE MASTER ENTITY LIST TO HAVE DEPTS
     #RERUN EVERY FEW MONTHS AT MOST
-    #for dept in depts:
-    #    if dept.text not in masterEntity['courseList']:
-    #        masterEntity['courseList'].append(dept.text)
+    # for dept in depts:
+    #    if dept.text not in masterEntity[courseList]:
+    #        masterEntity[courseList].append(dept.text)
     #        client.put(masterEntity)
-    if course not in masterEntity['courseList']:
-        masterEntity['courseList'].append(course)
+    if course not in masterEntity[courseList]:
+        masterEntity[courseList].append(course)
         client.put(masterEntity)
 
     print('made it into update entries for course: ', course)
@@ -120,13 +134,13 @@ def UpdateEntries(course, num_seats, depts, link):
         client.put(results[0])
 
         if results[0]['seats_avail'] == 0 and num_seats > 0:
-            yag=yagmail.SMTP('spotcheckwes@gmail.com','SpotCheckWes1234!')
+            yag=yagmail.SMTP('spotcheckwes@gmail.com','ALargeHorseEatsSpaghetti1101!?')
             contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
 
             for email in results[0]['emails']:
                 try:
                     yag.send(email, 'A Spot is Open in ' + course, contents)
-                    masterEntity['emailsSent'] += 1
+                    masterEntity[emailsSent] += 1
                 except:
                     pass
             
@@ -172,6 +186,9 @@ def WasScrapedAlready(link):
         return True
 
 def RetrieveMasterEntity(client):
+    """
+    Only works if the current masterEntity is the first one
+    """
     query = client.query(kind='masterEntity')
     print('made it past query')
     results = list(query.fetch())
@@ -180,7 +197,7 @@ def RetrieveMasterEntity(client):
 def CreateMasterEntity(client):
     masterEntity = datastore.Entity(key=client.key('masterEntity'))
     masterEntity.update({
-        'courseList' : []
+        courseList : []
         })
     client.put(masterEntity)
 
