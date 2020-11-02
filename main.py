@@ -11,6 +11,7 @@ import yagmail
 import re
 
 from Refresh import Refresh
+import config as cf
 
 datastore_client = datastore.Client()
 
@@ -60,7 +61,7 @@ def GetCourseList():
     query = datastore_client.query(kind='masterEntity')
     results = list(query.fetch())
     global course_list
-    course_list = results[0]['courseList']
+    course_list = results[0][cf.courseList]
     """
     figure out how to reference the semester between multiple files
     """
@@ -261,8 +262,8 @@ def GetTestJS():
     return render_template('testJS.html')
 
 
-@app.route('/update_courses', methods=['GET'])
-def UpdateCourses():
+@app.route('/update_semester', methods=['GET'])
+def UpdateSemester():
     Refresh(datastore_client)
     # ClearUsers()
     # CreateMasterEntity()

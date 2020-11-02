@@ -3,13 +3,21 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" 
+    content=
+    "SpotCheck is a web app that allows Wesleyan University students to receive emails when a seat opens in a class they want during schedule adjustment
+    ">
+    <meta name="author" content="Daniel Knopf">
+    <link rel="canonical" href="https://spotcheck.space/"/>
+
+
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <meta property="og:image" content="http://www.spotcheck.space/favicon.png"></meta>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{url_for('static', filename='js/jquery.toast.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/jquery.toast.min.css')}}" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- ****** faviconit.com favicons ****** -->
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon.ico">
@@ -32,6 +40,37 @@
     <meta name="msapplication-TileImage" content="/favicon-144.png">
     <meta name="msapplication-config" content="/browserconfig.xml">
     <!-- ****** faviconit.com favicons ****** -->
+
+    <!-- OPEN GRAPH / FACEBOOK -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://spotcheck.space/" />
+    <meta
+      property="og:title"
+      content="SpotCheck - Subscribe to Classes"
+    />
+    <meta
+      property="og:description"
+      content="Sign up to receive alerts when a seat opens in a class you want during Wesleyan schedule adjustment!"
+    />
+    <meta property="og:image" content="../favicon.png" />
+
+
+    <!-- TWITTER -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://spotcheck.space/" />
+    <meta
+    name="twitter:title"
+    content="SpotCheck - Subscribe to Classes"
+    />
+    <meta
+    name="twitter:description"
+    content="Sign up to receive alerts when a seat opens in a class you want during Wesleyan schedule adjustment!"
+    />
+    <meta name="twitter:image" content="../favicon.png" />
+    <meta name="twitter:site" content="@danielkn609" />
+    <meta name="twitter:creator" content="@danielkn609" />
+
+
     <title>SpotCheck</title>
     {% block head %} {% endblock %}
 </head>

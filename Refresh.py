@@ -12,5 +12,5 @@ def ClearUsers():
     print('made it past query key filter')
     results = list(query.fetch())
     for result in results:
-        key = resukt.key
+        key = result.key
         print(key)
