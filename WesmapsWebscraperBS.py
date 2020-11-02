@@ -9,7 +9,6 @@ import config as cf
 
 
 
-
 #GLOBAL VARIABLES
 class_dict = {}
 
@@ -53,7 +52,7 @@ def ScrapeSubjectPage(link):
     """
     Another place with fall/spring specific content
     """
-    courses_offered_link = subj_soup.find(href=re.compile('offered=Y#' + cf.semester)) #CHANGE THIS TO offered=Y#FALL IF NECESSARY
+    courses_offered_link = subj_soup.find(href=re.compile('offered=Y#' + cf.dateObj.semester)) #CHANGE THIS TO offered=Y#FALL IF NECESSARY
     #print(courses_offered_link.text)
     try:
         ScrapeCoursesOfferedPage(url_prefix + courses_offered_link.attrs['href'])
@@ -101,11 +100,11 @@ def UpdateEntries(course, num_seats, depts, link):
     #UPDATE THE MASTER ENTITY LIST TO HAVE DEPTS
     #RERUN EVERY FEW MONTHS AT MOST
     # for dept in depts:
-    #    if dept.text not in masterEntity[cf.courseList]:
-    #        masterEntity[cf.courseList].append(dept.text)
+    #    if dept.text not in masterEntity[cf.dateObj.courseList]:
+    #        masterEntity[cf.dateObj.courseList].append(dept.text)
     #        client.put(masterEntity)
-    if course not in masterEntity[cf.courseList]:
-        masterEntity[cf.courseList].append(course)
+    if course not in masterEntity[cf.dateObj.courseList]:
+        masterEntity[cf.dateObj.courseList].append(course)
         client.put(masterEntity)
 
     print('made it into update entries for course: ', course)
@@ -135,7 +134,7 @@ def UpdateEntries(course, num_seats, depts, link):
             for email in results[0]['emails']:
                 try:
                     yag.send(email, 'A Spot is Open in ' + course, contents)
-                    masterEntity[cf.emailsSent] += 1
+                    masterEntity[cf.dateObj.emailsSent] += 1
                     masterEntity[cf.totalEmailsSent] += 1
                 except:
                     pass
@@ -193,7 +192,7 @@ def RetrieveMasterEntity(client):
 def CreateMasterEntity(client):
     masterEntity = datastore.Entity(key=client.key('masterEntity'))
     masterEntity.update({
-        cf.courseList : []
+        cf.dateObj.courseList : []
         })
     client.put(masterEntity)
 
@@ -201,9 +200,11 @@ def StartFunction(datastore_client):
     global client
     client = datastore_client
     global linksScraped
+    cf.dateObj.GetCurrDate() #Update date
     linksScraped = {'Test' : 'Scraped'}
     print('GOT INTO START FUNCTION AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
     ScrapeMainPage()
+
 
 
 

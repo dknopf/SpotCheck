@@ -15,7 +15,6 @@ import config as cf
 
 datastore_client = datastore.Client()
 
-
 app = Flask(__name__)
 Mobility(app)
 
@@ -58,10 +57,11 @@ def index():
     #    return render_template('index.html')
 
 def GetCourseList():
+    UpdateDate()
     query = datastore_client.query(kind='masterEntity')
     results = list(query.fetch())
     global course_list
-    course_list = results[0][cf.courseList]
+    course_list = results[0][cf.dateObj.courseList]
     """
     figure out how to reference the semester between multiple files
     """
@@ -264,10 +264,19 @@ def GetTestJS():
 
 @app.route('/update_semester', methods=['GET'])
 def UpdateSemester():
+    UpdateDate()
     Refresh(datastore_client)
     # ClearUsers()
     # CreateMasterEntity()
     #RefreshCourses
+
+
+def UpdateDate():
+    cf.dateObj.GetCurrDate()
+
+UpdateDate()
+print(cf.dateObj.courseList)
+
 
 
 #@app.route('/unsubscribe', methods=['POST'])
