@@ -1,5 +1,4 @@
-﻿<!DOCTYPE html>
-
+<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
@@ -52,7 +51,7 @@
       property="og:description"
       content="Sign up to receive alerts when a seat opens in a class you want during Wesleyan schedule adjustment!"
     />
-    <meta property="og:image" content="../favicon.png" />
+    <meta property="og:image" content="../static/img/favicon-310.png" />
 
 
     <!-- TWITTER -->
@@ -66,13 +65,14 @@
     name="twitter:description"
     content="Sign up to receive alerts when a seat opens in a class you want during Wesleyan schedule adjustment!"
     />
-    <meta name="twitter:image" content="../favicon.png" />
+    <meta name="twitter:image" content="../static/img/favicon-310.png" />
     <meta name="twitter:site" content="@danielkn609" />
     <meta name="twitter:creator" content="@danielkn609" />
 
 
     <title>SpotCheck</title>
-    {% block head %} {% endblock %}
+    {% block head %}{% endblock %}
+    
 </head>
 {% if not request.MOBILE %}
     {% set background_image='' %}

@@ -7,8 +7,6 @@ class DateObject:
 
     def GetCurrDate(self):
         print("run getdate")
-        # global year
-        # global semester
         month=datetime.today().month
         if month > 9:
             self.semester = "spring"
@@ -22,25 +20,3 @@ class DateObject:
 
 dateObj = DateObject()
 totalEmailsSent = "totalEmailsSent"
-
-# def GetDate():
-#     print("run getdate")
-#     # global year
-#     # global semester
-#     month=datetime.today().month
-#     if month > 9:
-#         semester = "spring"
-#         year = str(datetime.today().year + 1)
-#     else:
-#         semester = "fall"
-#         year = str(datetime.today().year)
-#     return year, semester
-
-# year, semester = GetDate()
-
-# courseList1 = "courseList" + semester.title() + year
-
-# def courseList():
-#      return("courseList" + semester.title() + year)
-# def emailsSent():
-#     return ("emailsSent" + semester.title() + year)

@@ -285,6 +285,10 @@ label {
     -webkit-appearance: none;
 }
 
+.container {
+    display: flex;
+}
+
 .courseListText {
     font-weight: bold;
     font-size: calc(10px + .5vw);

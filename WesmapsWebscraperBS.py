@@ -128,7 +128,7 @@ def UpdateEntries(course, num_seats, depts, link):
         client.put(results[0])
 
         if results[0]['seats_avail'] == 0 and num_seats > 0:
-            yag=yagmail.SMTP('spotcheckwes@gmail.com','ALargeHorseEatsSpaghetti1101!?')
+            yag=yagmail.SMTP('spotcheckwes@gmail.com', oauth2_file="oauth2_creds.json") #oauth2 file is uploaded to gcloud not github
             contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
 
             for email in results[0]['emails']:

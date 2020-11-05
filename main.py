@@ -44,10 +44,8 @@ def autocomplete():
 @app.route('/', methods=['POST', 'GET'])
 def index():
     status = request.args.get('status', None)
-
     print('got into index!')
     GetCourseList()
-
     return render_template('index.html', course_list=course_list, status=status)
     #if request.method == 'POST':
 
@@ -268,14 +266,12 @@ def UpdateSemester():
     Refresh(datastore_client)
     # ClearUsers()
     # CreateMasterEntity()
-    #RefreshCourses
+    # RefreshCourses()
 
 
 def UpdateDate():
     cf.dateObj.GetCurrDate()
 
-UpdateDate()
-print(cf.dateObj.courseList)
 
 
 
