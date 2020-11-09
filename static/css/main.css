@@ -284,11 +284,6 @@ label {
     cursor: pointer;
     -webkit-appearance: none;
 }
-
-.container {
-    display: flex;
-}
-
 .courseListText {
     font-weight: bold;
     font-size: calc(10px + .5vw);
@@ -296,6 +291,7 @@ label {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0;
 }
 
 .courseListTextCell {

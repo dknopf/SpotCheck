@@ -14,6 +14,8 @@ class_dict = {}
 
 url_prefix = 'https://owaprod-pub.wesleyan.edu/reg/'
 
+emails_to_send_dict = {}
+
 
 #print(src)
 def ScrapeMainPage():
@@ -23,7 +25,7 @@ def ScrapeMainPage():
     soup = BeautifulSoup(src, 'lxml')
     other_header = soup.find('b', text='OTHER')
     links = other_header.find_all_previous('a', href=re.compile('subj_page'))
-    # links = links[:1]
+    links = links[:6]
     print('above multiprocessing')
     #num_p = mp.cpu_count()
     #print('num processors: ', num_p)
@@ -103,7 +105,7 @@ def UpdateEntries(course, num_seats, depts, link):
     #    if dept.text not in masterEntity[cf.dateObj.courseList]:
     #        masterEntity[cf.dateObj.courseList].append(dept.text)
     #        client.put(masterEntity)
-    if course not in masterEntity[cf.dateObj.courseList]:
+    if course not in masterEntity[cf.dateObj.courseList]: #MAKE THIS A DICT FOR EASY LOOKUP
         masterEntity[cf.dateObj.courseList].append(course)
         client.put(masterEntity)
 
@@ -123,29 +125,29 @@ def UpdateEntries(course, num_seats, depts, link):
         #for i, dept in enumerate(depts):
         #        print('dept.text for course: ', course, ' is: ', dept.text)
         #        results[0]['dept' + str(i)] = dept.text
-        results[0]['link'] = link
-        results[0]['date_scraped'] = datetime.utcnow()
-        client.put(results[0])
-
+        
         if results[0]['seats_avail'] == 0 and num_seats > 0:
-            yag=yagmail.SMTP('spotcheckwes@gmail.com', oauth2_file="oauth2_creds.json") #oauth2 file is uploaded to gcloud not github
-            contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
+            AddAggregatedEmails(results[0]['emails'], course, link)
 
-            for email in results[0]['emails']:
-                try:
-                    yag.send(email, 'A Spot is Open in ' + course, contents)
-                    masterEntity[cf.dateObj.emailsSent] += 1
-                    masterEntity[cf.totalEmailsSent] += 1
-                except:
-                    pass
+            # yag=yagmail.SMTP('spotcheckwes@gmail.com', oauth2_file="oauth2_creds.json") #oauth2 file is uploaded to gcloud not github
+            # contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
+
+            # for email in results[0]['emails']:
+            #     try:
+            #         yag.send(email, 'A Spot is Open in ' + course, contents)
+            #         masterEntity[cf.dateObj.emailsSent] += 1
+            #         masterEntity[cf.totalEmailsSent] += 1
+            #     except:
+            #         pass
             
 
             results[0]['seats_avail'] = num_seats
-            client.put(results[0])
-            client.put(masterEntity)
         elif results[0]['seats_avail']  != num_seats:
             results[0]['seats_avail'] = num_seats
-            client.put(results[0])
+
+        results[0]['link'] = link
+        results[0]['date_scraped'] = datetime.utcnow()
+        client.put(results[0])
     elif len(results) == 0:
         print('got into len results is 0')
         new_entity = datastore.Entity(key=client.key('course', course))
@@ -161,6 +163,40 @@ def UpdateEntries(course, num_seats, depts, link):
 
         client.put(new_entity)
         print('put new entity in: ', new_entity.key.name)
+
+def AddAggregatedEmails(user_list, course, link):
+    """
+    Creating a list of strings and then using ''.join(str_list)
+    is much faster than concatenating many strings together
+    """
+    global emails_to_send_dict
+
+    for user in user_list:
+        try:
+            if emails_to_send_dict[user] != []:
+                emails_to_send_dict[user].append('-<a href ="' + link + '">' + course + '</a>\n')
+        except:
+            emails_to_send_dict[user] = ['<p>Congrats, a spot has opened up in: \n-<a href ="' + link + '">' + course + '</a>\n']
+
+    
+
+def SendEmails():
+    global emails_to_send_dict
+    masterEntity = RetrieveMasterEntity(client)
+
+    yag=yagmail.SMTP('spotcheckwes@gmail.com', oauth2_file="oauth2_creds.json") #oauth2 file is uploaded to gcloud not github
+
+    for user in emails_to_send_dict:
+        emails_to_send_dict[user].append('\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>')
+        contents = ''.join(emails_to_send_dict[user])
+        yag.send(user, 'A Spot is Open in a Class You Want!', contents)
+        masterEntity[cf.dateObj.emailsSent] += 1
+        masterEntity[cf.totalEmailsSent] += 1
+    client.put(masterEntity)
+    
+
+
+
 
 
 def WasScrapedAlready(link):
@@ -204,11 +240,4 @@ def StartFunction(datastore_client):
     linksScraped = {'Test' : 'Scraped'}
     print('GOT INTO START FUNCTION AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
     ScrapeMainPage()
-
-
-
-
-#if __name__ == '__main__':
-#    print('GOT INTO IF NAME IS MAIN \n \n \n AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
-#    ScrapeMainPage()
-#ScrapeSubjectPage('https://owaprod-pub.wesleyan.edu/reg/!wesmaps_page.html?stuid=&facid=NONE&subj_page=CCIV&term=1209')
+    SendEmails()
