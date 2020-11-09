@@ -192,6 +192,7 @@ def SendEmails():
         yag.send(user, 'A Spot is Open in a Class You Want!', contents)
         masterEntity[cf.dateObj.emailsSent] += 1
         masterEntity[cf.totalEmailsSent] += 1
+    emails_to_send_dict = {}
     client.put(masterEntity)
     
 
