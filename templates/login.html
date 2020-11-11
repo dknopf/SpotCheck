@@ -4,13 +4,9 @@
 {% endblock %}
 
 {% block body %}
-<!--<div class="content">
-    <div class="modalBox">-->
-
-
         <h1>Your Subscribed Courses</h1>
         <p class="main">
-            Please enter your email to view your subscribed classes.
+            Please enter your email or phone number to view your subscribed classes.
         </p>
         <!--<form action="/" method="POST">
             <input type="text" name="content" id="content" />
@@ -27,7 +23,7 @@
                 <div class="errorDiv">
                     <p class="errorText">
                         {% if tryAgain %}
-                        No user with given email exists, please try again!
+                        No user with given username exists, please try again!
                         {% else %}
                         <br />
                         {% endif %}
@@ -46,49 +42,5 @@
                 <input type="submit" value="Return to homepage" class="outlineButton" id="homeButton"/>
             </form>
         </div>
-        <!--<div>
-            <p>
-                To view the courses you are already subscribed to, enter your email below!
-            </p>
-        </div>
-        <form action="/show_subscribed_courses" method="POST">
-            <label>Email:</label>
-            <br />
-            <input type="text" name="email" id="user_email" />
-            <br />
-            <input type="submit" value="See subscribed courses" />
-        </form>-->
-
-    <!--</div>
-</div>-->
-<!--<div class="content">
-    <h1 style="text-align: center">Task Master</h1>
-    {% if tasks|length < 1 %}
-    <h4 style="text-align: center">There are no tasks, create one below</h4>
-    {% else %}
-        <table>
-            <tr>
-                <th>Task</th>
-                <th>Added</th>
-                <th>Actions</th>
-            </tr>
-            {% for task in tasks %}
-                <tr>
-                    <td>{{ task.content }}</td>
-                    <td>{{ task.date_created }}</td>
-                    <td>
-                        <a href="/delete/{{task.key.id}}">Delete</a>
-                        <br>
-                        <a href="/update/{{task.key.id}}">Update</a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
-    <form action="/" method="POST">
-        <input type="text" name="content" id="content" />
-        <input type="submit" value="Add Task" />
-    </form>
-</div>-->
 {% endblock %}
 

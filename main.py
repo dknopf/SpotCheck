@@ -73,16 +73,15 @@ def scheduled_processes():
 
 @app.route('/subscribe', methods=['POST', 'GET'])
 def SubscribeToCourses():
-
-    email = request.form['email'].strip().lower()
+    user = CleanUser(request.form['email'].strip().lower())
     courses = request.form['courses'].strip()
-    if not (email == '' or courses == ''):
+    if not (user == '' or courses == ''):
         user_query = datastore_client.query(kind='user')
-        user_query.key_filter((datastore_client.key('user', email)), '=')
+        user_query.key_filter((datastore_client.key('user', user)), '=')
         user_results = list(user_query.fetch())
         print('len user results is', len(user_results))
         if len(user_results) == 0:
-            user_entity = datastore.Entity(key=datastore_client.key('user', email))
+            user_entity = datastore.Entity(key=datastore_client.key('user', user))
             user_entity.update({
                 'courses' : []
                 })
@@ -110,8 +109,8 @@ def SubscribeToCourses():
                     if course_to_add.key.name not in user_entity['courses']:
                         user_entity['courses'].append(course_to_add.key.name)
                         courses_added[course_to_add.key.name] = ''
-                    if email not in course_to_add['emails']:
-                        course_to_add['emails'].append(email)
+                    if user not in course_to_add['emails']:
+                        course_to_add['emails'].append(user)
                         courses_added[course_to_add.key.name] = ''
 
 
@@ -134,8 +133,8 @@ def SubscribeToCourses():
                     print('RETURNED MORE THAN ONE RESULT IN SUBSCRIBE QUERY')
                 elif len(results) ==1:
                     print('successfuly found one result')
-                    if email not in results[0]['emails']:
-                        results[0]['emails'].append(email)
+                    if user not in results[0]['emails']:
+                        results[0]['emails'].append(user)
                         courses_added[course] = ''
                         #confirmed_courses.append(course)
                     if course not in user_entity['courses']:
@@ -150,58 +149,24 @@ def SubscribeToCourses():
                 print('made it past fetching query. Len query is: ', len(results))
 
         datastore_client.put(user_entity)
-        
-
-
-
-        #user_query = datastore_client.query(kind='user')
-        #user_query.key_filter((datastore_client.key('user', email)), '=')
-        #user_results = list(user_query.fetch())
-        #print('len user results is', len(user_results))
-        #if len(user_results) == 0:
-        #    user_entity = datastore.Entity(key=datastore_client.key('user', email))
-        #    user_entity.update({
-        #        'courses' : [course for course in confirmed_courses]
-        #        })
-        #    datastore_client.put(user_entity)
-        #elif len(user_results) == 1:
-
-        #    print('confirmed courses is: ', confirmed_courses)
-        #    user_results[0]['courses'] += confirmed_courses
-        #    print(user_results[0])
-
-        #    datastore_client.put(user_results[0])
-        #elif len(user_results) > 1:
-        #    print('THERE ARE MORE THAN ONE USERS RETURNED FOR USER SEARCH')
-        #msg = EmailMessage()
-        #msg.set_content('Hello, World')
-        #msg['Subject'] = "THIS IS  A TEST EMAIL"
-        #msg['From'] = 'dknopf@wesleyan.edu'
-        #msg['To'] = 'dknopf@wesleyan.edu'
-        #s = smtplib.SMTP('smtp.gmail.com')
-        #s.send_message(msg)
-        #s.quit()
-        ##os.system("curl https://intoli.com/install-google-chrome.sh | bash")
         if len(courses_added) > 0:
             print('got into confirmed courses greater than 1')
             return redirect(url_for('index', status='success'))
-
-            #if request.form['page'] == 'index':
         else:
             return redirect(url_for('index', status='failure'))
-
-        # NOT NECESSARY BC YOU CAN NO LONGER SUBSCRIBE FROM COURSELIST PAGE
-        #elif request.form['page'] == 'courselist':
-        #    if len(user_results) == 1:
-        #        return render_template('courselist.html', courses=user_results[0]['courses'], user=email)
-        #    else:
-        #        return render_template('courselist.html', courses=user_entity['courses'], user=email)
     else:
         if request.form['page'] == 'index':
             return redirect(url_for('index', status='noEntry'))
-        #elif request.form['page'] == 'courselist':
-        #    return render_template('courselist.html')
 
+
+def CleanUser(user):
+    if not re.search('@', user):
+        if user[:2] == "+1":
+            user = user[2:]
+        user = re.sub("[\(\)\-\s]", "", user)
+
+    print("user:", user)
+    return user
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -210,7 +175,7 @@ def login():
 
 @app.route('/show_subscribed_courses', methods = ['POST', 'GET'])
 def ShowSubscribedCourses():
-    user = request.form['email'].strip().lower()
+    user = CleanUser(request.form['email'].strip().lower())
     if user == '':
         return render_template('login.html', tryAgain=True) #Add feedback here
     query = datastore_client.query(kind='user')

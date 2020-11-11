@@ -5,18 +5,18 @@
 
 <h1>Welcome to SpotCheck!</h1>
 <p class="main">
-    To receive email alerts when a Wesleyan class becomes available during adjustment, enter your email and the classes you're
+    To receive email alerts when a Wesleyan class becomes available during adjustment, enter your email or American phone number and the classes you're
     interested in below! Enter a department abbrevation to subscribe to all classes in that department. <br /> <br />Separate the classes by comma, e.g. <i>Techiques of Fiction, COMP, AMST, Advanced Tiny Hats</i>
 </p>
 <!--<form action="/" method="POST">
     <input type="text" name="content" id="content" />
-    <input type="submit" value="SCRAPE ME BABY" />
+    <input type="submit" value="SCRAPE ME" />
 </form>-->
 <div class="homePageForm">
     <form action="/subscribe" method="POST" id="subscribeForm"></form>
     <div class="subscribeFormTextInput">
         <input type="hidden" name="page" value="index" form="subscribeForm" />
-        <label>Email address</label>
+        <label>Email or phone</label>
         <br />
         <br />
         <input type="text" name="email" id="email" form="subscribeForm" />

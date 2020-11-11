@@ -6,6 +6,12 @@ from google.cloud import datastore
 import yagmail
 from datetime import datetime
 import config as cf
+from twilio.rest import Client
+from dotenv import load_dotenv
+import os
+
+
+
 
 
 
@@ -14,7 +20,9 @@ class_dict = {}
 
 url_prefix = 'https://owaprod-pub.wesleyan.edu/reg/'
 
-emails_to_send_dict = {}
+messages_to_send_dict = {}
+
+load_dotenv()
 
 
 #print(src)
@@ -127,7 +135,7 @@ def UpdateEntries(course, num_seats, depts, link):
         #        results[0]['dept' + str(i)] = dept.text
         
         if results[0]['seats_avail'] == 0 and num_seats > 0:
-            AddAggregatedEmails(results[0]['emails'], course, link)
+            AddAggregatedMessages(results[0]['emails'], course, link)
 
             # yag=yagmail.SMTP('spotcheckwes@gmail.com', oauth2_file="oauth2_creds.json") #oauth2 file is uploaded to gcloud not github
             # contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
@@ -164,35 +172,53 @@ def UpdateEntries(course, num_seats, depts, link):
         client.put(new_entity)
         print('put new entity in: ', new_entity.key.name)
 
-def AddAggregatedEmails(user_list, course, link):
+def AddAggregatedMessages(user_list, course, link):
     """
     Creating a list of strings and then using ''.join(str_list)
     is much faster than concatenating many strings together
     """
-    global emails_to_send_dict
+    global messages_to_send_dict
 
     for user in user_list:
+        if re.search("\d{9,10}", user): #Text
+            segment = '-' + course + '\n'
+        elif re.search("@", user):
+            segment = '-<a href ="' + link + '">' + course + '</a>\n'
         try:
-            if emails_to_send_dict[user] != []:
-                emails_to_send_dict[user].append('-<a href ="' + link + '">' + course + '</a>\n')
+            if messages_to_send_dict[user] != []:
+                messages_to_send_dict[user].append(segment)
         except:
-            emails_to_send_dict[user] = ['<p>Congrats, a spot has opened up in: \n-<a href ="' + link + '">' + course + '</a>\n']
+            messages_to_send_dict[user] = ['Congrats, a spot has opened up in: \n' + segment]
 
     
 
-def SendEmails():
-    global emails_to_send_dict
+def SendMessages():
+    global messages_to_send_dict
     masterEntity = RetrieveMasterEntity(client)
 
     yag=yagmail.SMTP('spotcheckwes@gmail.com', oauth2_file="oauth2_creds.json") #oauth2 file is uploaded to gcloud not github
+    twilio_client = Client(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_ACCOUNT_SECRET"))
 
-    for user in emails_to_send_dict:
-        emails_to_send_dict[user].append('\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>')
-        contents = ''.join(emails_to_send_dict[user])
-        yag.send(user, 'A Spot is Open in a Class You Want!', contents)
-        masterEntity[cf.dateObj.emailsSent] += 1
-        masterEntity[cf.totalEmailsSent] += 1
-    emails_to_send_dict = {}
+
+    for user in messages_to_send_dict:
+        if re.search("\d{9,10}", user): #Text
+            messages_to_send_dict[user].append('\nVisit https://www.spotcheck.space/login to see your subscribed courses/unsubscribe')
+            contents = ''.join(messages_to_send_dict[user])
+            message = twilio_client.messages \
+                        .create(
+                            body=contents,
+                            messaging_service_sid='MGce3b91ee5ecc126b6e230f1afb8c2c5b',
+                            to="+1" + user
+                        )
+            masterEntity[cf.dateObj.textsSent] += 1
+            masterEntity[cf.totalTextsSent] += 1
+        elif re.search("@", user): #Email
+            messages_to_send_dict[user].append('\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>')
+            contents = '<p>' + ''.join(messages_to_send_dict[user])
+            yag.send(user, 'A Spot is Open in a Class You Want!', contents)
+            masterEntity[cf.dateObj.emailsSent] += 1
+            masterEntity[cf.totalEmailsSent] += 1
+    messages_to_send_dict = {}
     client.put(masterEntity)
     
 
@@ -241,4 +267,4 @@ def StartFunction(datastore_client):
     linksScraped = {'Test' : 'Scraped'}
     print('GOT INTO START FUNCTION AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
     ScrapeMainPage()
-    SendEmails()
+    SendMessages()

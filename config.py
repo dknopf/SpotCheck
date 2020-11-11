@@ -16,7 +16,9 @@ class DateObject:
             self.year = str(datetime.today().year)
         self.courseList = "courseList" + self.semester.title() + self.year
         self.emailsSent = "emailsSent" + self.semester.title() + self.year
+        self.textsSent = "textsSent" + self.semester.title() + self.year
 
 
 dateObj = DateObject()
 totalEmailsSent = "totalEmailsSent"
+totalTextsSent = "totalTextsSent"
