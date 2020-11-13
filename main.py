@@ -60,9 +60,6 @@ def GetCourseList():
     results = list(query.fetch())
     global course_list
     course_list = results[0][cf.dateObj.courseList]
-    """
-    figure out how to reference the semester between multiple files
-    """
 
 @app.route('/schedule')
 def scheduled_processes():

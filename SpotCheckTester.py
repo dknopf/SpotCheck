@@ -96,4 +96,5 @@ def Unsubscribe(driver, department):
 if __name__ == '__main__':
 
     scrape()
+    
 
