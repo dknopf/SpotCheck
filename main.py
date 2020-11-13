@@ -235,21 +235,5 @@ def UpdateDate():
     cf.dateObj.GetCurrDate()
 
 
-
-
-#@app.route('/unsubscribe', methods=['POST'])
-#def Unsubscribe():
-#    if request.method == 'POST':
-#        user = request.form['user']
-#        course = request.form['course']
-#        user_entity = datastore_client.get(datastore_client.key('user', user))
-#        user_entity['courses'].remove(course)
-#        datastore_client.put(user_entity)
-#        course_entity = datastore_client.get(datastore_client.key('course', course))
-#        course_entity['emails'].remove(user)
-#        datastore_client.put(course_entity)
-#        return render_template('courselist.html', courses = user_entity['courses'], user=user)
-
-
 if __name__ == '__main__':
     app.run(debug=True)
