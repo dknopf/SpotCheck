@@ -136,6 +136,9 @@
             if (e != 0)
                 $(this).hide();
         });
+        if ($(".tables table:visible").next().length == 0) {
+            $("#nextPage").hide();
+        }
         $("#nextPage").click(function () {
             if ($(".tables table:visible").next().length != 0) {
                 $("#prevPage").show();

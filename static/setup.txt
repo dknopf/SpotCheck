@@ -1,3 +1,4 @@
 -Make sure that autoscaling is on for the VM instance group
 -Make sure that test setings are off so that all lines are scraped
 -Make sure that the appropriate semester is being scraped
+-Check that all classes have been scraped and are available in autocomplete and in datastore

@@ -9,11 +9,13 @@ from email.message import EmailMessage
 import smtplib, ssl
 import yagmail
 import re
+from twilio.rest import Client as Twilio_Client
 
 from Refresh import Refresh
 import config as cf
 
 datastore_client = datastore.Client()
+twilio_client = Twilio_Client(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_ACCOUNT_SECRET"))
 
 app = Flask(__name__)
 Mobility(app)
@@ -71,6 +73,8 @@ def scheduled_processes():
 @app.route('/subscribe', methods=['POST', 'GET'])
 def SubscribeToCourses():
     user = CleanUser(request.form['email'].strip().lower())
+    if not ValidateUser(user):
+        return redirect(url_for('index', status='badUsername'))
     courses = request.form['courses'].strip()
     if not (user == '' or courses == ''):
         user_query = datastore_client.query(kind='user')
@@ -160,10 +164,22 @@ def CleanUser(user):
     if not re.search('@', user):
         if user[:2] == "+1":
             user = user[2:]
-        user = re.sub("[\(\)\-\s]", "", user)
+        user = re.sub("[\(\)\-\+\s]", "", user)
 
     print("user:", user)
     return user
+
+def ValidateUser(user):
+    if not re.search('@', user):
+        if not re.search("^\d{10,11}$", user):
+            return False
+        try:
+            phone_number = twilio_client.lookups \
+                            .phone_numbers(user) \
+                            .fetch(country_code='US')
+        except:
+            return False
+    return True
 
 
 @app.route('/login', methods=['POST', 'GET'])

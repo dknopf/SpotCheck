@@ -9,6 +9,7 @@ load_dotenv()
 client = Client(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_ACCOUNT_SECRET"))
 
 
+
 for number in ['+19173992277', '+12036770940']:
     message = client.messages \
                     .create(

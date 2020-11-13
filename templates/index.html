@@ -91,6 +91,17 @@
                 loader: false,
             });
         }
+        if ("{{status}}" == 'badUsername') {
+            $.toast({
+                text: "<p class='toastText' id='failure'>Invalid email or phone number, please try again..</p>",
+                bgColor: '{{failureBgColor}}',
+                position: 'top-center',
+                textColor: '{{failureTextColor}}',
+                icon: 'error',
+                showHideTransition: 'slide',
+                loader: false,
+            });
+        }
 
     });
 </script>
