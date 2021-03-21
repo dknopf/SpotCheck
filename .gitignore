@@ -1,0 +1,9 @@
+WeScraper-5ca8d5235989.json
+
+.DS_Store
+.env
+env/
+__pycache__
+oauth2_creds.json
+
+~/

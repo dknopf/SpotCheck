@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" 
     content=
-    "SpotCheck is a web app that allows Wesleyan University students to receive emails when a seat opens in a class they want during schedule adjustment
+    "SpotCheck is a web app that allows Wesleyan University students to receive emails or texts when a seat opens in a class they want during schedule adjustment
     ">
     <meta name="author" content="Daniel Knopf">
     <link rel="canonical" href="https://spotcheck.space/"/>
 
-
+    <!-- THERE ARE TWO SHORTCUT ICON LINKS -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <meta property="og:image" content="http://www.spotcheck.space/favicon.png"></meta>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{{url_for('static', filename='js/jquery.toast.min.js')}}"></script>
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/jquery.toast.min.css')}}" />
+
     <!-- ****** faviconit.com favicons ****** -->
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon.ico">
@@ -51,7 +51,7 @@
       property="og:description"
       content="Sign up to receive alerts when a seat opens in a class you want during Wesleyan schedule adjustment!"
     />
-    <meta property="og:image" content="../static/img/favicon-310.png" />
+    <meta property="og:image" content="../static/img/favicon-420-square.png" />
 
 
     <!-- TWITTER -->
@@ -65,7 +65,7 @@
     name="twitter:description"
     content="Sign up to receive alerts when a seat opens in a class you want during Wesleyan schedule adjustment!"
     />
-    <meta name="twitter:image" content="../static/img/favicon-310.png" />
+    <meta name="twitter:image" content="https://spotcheck.space/static/img/favicon-420-square.png" />
     <meta name="twitter:site" content="@danielkn609" />
     <meta name="twitter:creator" content="@danielkn609" />
 
@@ -91,13 +91,13 @@
             </div>
             {% if request.MOBILE %}
             <div class="madeByText">
-                Built by <a href="https://www.linkedin.com/in/daniel-knopf-609/" class="madeByLink">Daniel Knopf</a> | Designed by <a href="https://www.zoereifel.com/" class="madeByLink">Zoe Reifel</a>
+                Built by <a href="https://www.linkedin.com/in/daniel-knopf-609/" class="madeByLink">Daniel Knopf</a>
             </div>
             {% endif %}
         </div>
         {% if not request.MOBILE %}
         <div class="madeByText">
-            Built by <a href="https://www.linkedin.com/in/daniel-knopf-609/" class="madeByLink">Daniel Knopf</a> | Designed by <a href="https://www.zoereifel.com/" class="madeByLink">Zoe Reifel</a>
+            Built by <a href="https://www.linkedin.com/in/daniel-knopf-609/" class="madeByLink">Daniel Knopf</a> 
         </div>
         {% endif %}
     </div>

@@ -1,4 +1,5 @@
 -Make sure that autoscaling is on for the VM instance group
 -Make sure that test setings are off so that all lines are scraped
 -Make sure that the appropriate semester is being scraped
+-Set the cron job to run every ~5 minutes (if the interval is set to 5 minutes it will wait five minutes, run, then wait 5 minutes AFTER finished running)
 -Check that all classes have been scraped and are available in autocomplete and in datastore

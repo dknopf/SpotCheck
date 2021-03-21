@@ -1,5 +1,5 @@
 cron:
-- description: "Check availability"
-  url: /schedule
-  schedule: every monday 11:10
-  timezone: EST
+# - description: "Check availability"
+#   url: /schedule
+#   schedule: every 5 mins
+#   timezone: EST

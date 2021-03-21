@@ -171,7 +171,7 @@ def CleanUser(user):
 
 def ValidateUser(user):
     if not re.search('@', user):
-        if not re.search("^\d{10,11}$", user):
+        if not re.search("^\d{10}$", user):
             return False
         try:
             phone_number = twilio_client.lookups \

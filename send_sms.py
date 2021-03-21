@@ -10,7 +10,7 @@ client = Client(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_ACCOUNT_SECRE
 
 
 
-for number in ['+19173992277', '+12036770940']:
+for number in ['+19173992277']:
     message = client.messages \
                     .create(
                         body="*in dracula voice* Good eeeveeenning \nhttps://spotcheck.space",
