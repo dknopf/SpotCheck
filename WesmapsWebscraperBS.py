@@ -18,6 +18,7 @@ url_prefix = 'https://owaprod-pub.wesleyan.edu/reg/'
 
 messages_to_send_dict = {}
 
+# Loads the twilio account credentials stored in a .env file
 load_dotenv()
 
 
@@ -73,13 +74,14 @@ def ScrapeSubjectPage(link):
 def ScrapeCoursesOfferedPage(link):
     offered_content = requests.get(link).content
     offered_soup = BeautifulSoup(offered_content, 'lxml')
-    """
-    ADD SUPPORT HERE TO AUTOMATICALLY DETECT SEMESTER
-    Right now the change is based on spring.find_all_previous vs find_all_next
-    """
+
+    # fall courses are all before the "spring" header, spring classes all after
     spring = offered_soup.find('a', attrs={'name': 'spring'})
 
-    links = spring.find_all_next(href=re.compile('crse'))
+    if cf.dateObj.semester == 'fall':
+        links = spring.find_all_previous(href=re.compile('crse'))
+    elif cf.dateObj.semester == 'spring':
+        links = spring.find_all_next(href=re.compile('crse'))
     #links = offered_soup.find_all(href=re.compile('crse'))
     global linksScraped
     for link in links:
