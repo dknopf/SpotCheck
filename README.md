@@ -8,3 +8,5 @@ Cron:
 `gcloud app deploy cron.yaml`
 
 Create an array field in masterEntity in datastore that is `courseList<Semester><year>`
+
+Delete all users and courses
