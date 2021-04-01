@@ -8,6 +8,7 @@ The www.SpotCheck.space webapp alerts you if space in a class you want opens up 
 3. Install twilio and yagmail credentials
    * Twilio credentials require you to create a .env file and put the `TWILIO_ACCOUNT_SID='<sid here>'` and `TWILIO_ACCOUNT_SECRET='<secret here>'`
    * Gmail + Google API credentials require you to create an oauth2_creds.json file. See instructions here: https://developers.google.com/identity/protocols/oauth2
+   * NEVER EVER UPLOAD THESE FILES TO GITHUB, ONLY TO GOOGLE CLOUD. PUT THEM IN YOUR GITIGNORE. IM SERIOUS, I ACCIDENTALLY UPLOADED MY GCLOUD CREDENTIALS TO GITHUB ONCE AND SOMEONE USED MY ACCOUNT TO MINE CRYPTOCURRENCY. ITS NOT THE VIBE, DON'T DO IT.
 4. Create and activate a python virtual env: https://docs.python.org/3/library/venv.html
 5. Install python packages with `pip install -r requirements.txt`
 
