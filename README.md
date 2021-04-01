@@ -6,3 +6,5 @@ The www.SpotCheck.space webapp alerts you if space in a class you want opens up 
 Cron:
 
 `gcloud app deploy cron.yaml`
+
+Create an array field in masterEntity in datastore that is `courseList<Semester><year>`
