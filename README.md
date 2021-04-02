@@ -26,7 +26,7 @@ The www.SpotCheck.space webapp alerts you if space in a class you want opens up 
 # Changing semesters
 
 1. Create an array field in masterEntity in datastore that is `courseList<Semester><year>`
-2. Delete all user and course entities from datastore. Really there should be a script that handles this but there isn't yet
+2. Double check that all user and course entities have been deleted from datastore. This deletion should be handled by refresh.py
 3. I think all the other semester switching stuff should be handled automatically now
 
 ## After Adjustment Ends
