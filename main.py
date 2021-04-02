@@ -6,7 +6,8 @@ from google.cloud import datastore
 from WesmapsWebscraperBS import StartFunction
 import os
 from email.message import EmailMessage
-import smtplib, ssl
+import smtplib
+import ssl
 import yagmail
 import re
 from twilio.rest import Client as Twilio_Client
@@ -15,21 +16,22 @@ from Refresh import Refresh
 import config as cf
 
 datastore_client = datastore.Client()
-twilio_client = Twilio_Client(os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_ACCOUNT_SECRET"))
+twilio_client = Twilio_Client(
+    os.getenv("TWILIO_ACCOUNT_SID"), os.getenv("TWILIO_ACCOUNT_SECRET"))
 
 app = Flask(__name__)
 Mobility(app)
 
-#@app.route('/CreateME')
-#def RetrieveMasterEntity():
+# @app.route('/CreateME')
+# def RetrieveMasterEntity():
 #    query = datastore_client.query(kind='masterEntity')
 #    print('made it past query')
 #    results = list(query.fetch())
 #    return ','.join(results[0]['courseList'])
 
 
-#@app.route('/', methods=['POST', 'GET'])
-#def index():
+# @app.route('/', methods=['POST', 'GET'])
+# def index():
 #    return render_template('testAutocomplete.html')
 
 @app.route('/autocomplete', methods=['GET'])
@@ -43,18 +45,20 @@ def autocomplete():
     print('got here')
     return jsonify(matching_results=course_results)
 
+
 @app.route('/', methods=['POST', 'GET'])
 def index():
     status = request.args.get('status', None)
     print('got into index!')
     GetCourseList()
     return render_template('index.html', course_list=course_list, status=status)
-    #if request.method == 'POST':
+    # if request.method == 'POST':
 
     #    StartFunction(datastore_client)
     #    return redirect('/')
-    #else:
+    # else:
     #    return render_template('index.html')
+
 
 def GetCourseList():
     UpdateDate()
@@ -63,11 +67,11 @@ def GetCourseList():
     global course_list
     course_list = results[0][cf.dateObj.courseList]
 
+
 @app.route('/schedule')
 def scheduled_processes():
     StartFunction(datastore_client)
     return 'Hopefully this never returns'
-
 
 
 @app.route('/subscribe', methods=['POST', 'GET'])
@@ -82,10 +86,11 @@ def SubscribeToCourses():
         user_results = list(user_query.fetch())
         print('len user results is', len(user_results))
         if len(user_results) == 0:
-            user_entity = datastore.Entity(key=datastore_client.key('user', user))
+            user_entity = datastore.Entity(
+                key=datastore_client.key('user', user))
             user_entity.update({
-                'courses' : []
-                })
+                'courses': []
+            })
             datastore_client.put(user_entity)
         elif len(user_results) == 1:
             user_entity = user_results[0]
@@ -96,16 +101,16 @@ def SubscribeToCourses():
         courses_added = {}
 
         for course in courses:
-            course=re.sub('  ', ', ', course)
+            course = re.sub('  ', ', ', course)
             course = course.strip()
 
-            if re.search('^[A-Z&]{3,4}$', course): #Department
+            if re.search('^[A-Z&]{3,4}$', course):  # Department
                 print('GOT INTO DEPARTMENT SECTION')
                 courses_to_add = []
                 for i in range(8):
                     query = datastore_client.query(kind='course')
                     query.add_filter('dept' + str(i), '=', course)
-                    courses_to_add+=list(query.fetch())
+                    courses_to_add += list(query.fetch())
                 for course_to_add in courses_to_add:
                     if course_to_add.key.name not in user_entity['courses']:
                         user_entity['courses'].append(course_to_add.key.name)
@@ -114,37 +119,38 @@ def SubscribeToCourses():
                         course_to_add['emails'].append(user)
                         courses_added[course_to_add.key.name] = ''
 
-
-                    #if email not in course_to_add['emails'] and course_to_add.key.name not in courses_added:
+                    # if email not in course_to_add['emails'] and course_to_add.key.name not in courses_added:
                     #    course_to_add['emails'].append(email)
                     #    courses_added[course_to_add.key.name] = '' #SHOULD PROBABLY TURN CONFIRMED COURSES INTO A DICT
                     #    confirmed_courses.append(course_to_add.key.name)
-                    #else:
+                    # else:
                     #    print('email: ', email, 'is in emails list of: ', course_to_add.key.name)
                     #    print('courses_added is: ', courses_added)
-                #datastore_client.put_multi(courses_to_add)
-                    datastore_client.put(course_to_add) #MAKE THIS INTO PUT MULTI
+                # datastore_client.put_multi(courses_to_add)
+                    # MAKE THIS INTO PUT MULTI
+                    datastore_client.put(course_to_add)
 
-            else: #Individual course
+            else:  # Individual course
                 query = datastore_client.query(kind='course')
                 query.key_filter((datastore_client.key('course', course)), '=')
-                print('made it past query key filter in subscribe. Key is: ', (datastore_client.key('course', course)))
+                print('made it past query key filter in subscribe. Key is: ',
+                      (datastore_client.key('course', course)))
                 results = list(query.fetch())
                 if len(results) > 1:
                     print('RETURNED MORE THAN ONE RESULT IN SUBSCRIBE QUERY')
-                elif len(results) ==1:
+                elif len(results) == 1:
                     print('successfuly found one result')
                     if user not in results[0]['emails']:
                         results[0]['emails'].append(user)
                         courses_added[course] = ''
-                        #confirmed_courses.append(course)
+                        # confirmed_courses.append(course)
                     if course not in user_entity['courses']:
                         user_entity['courses'].append(course)
                         courses_added[course] = ''
 
                     datastore_client.put(results[0])
                 elif len(results) == 0:
-                    #PUT IN A 'DID YOU MEAN THIS' FILTER
+                    # PUT IN A 'DID YOU MEAN THIS' FILTER
                     print('no result found')
 
                 print('made it past fetching query. Len query is: ', len(results))
@@ -169,14 +175,15 @@ def CleanUser(user):
     print("user:", user)
     return user
 
+
 def ValidateUser(user):
     if not re.search('@', user):
         if not re.search("^\d{10}$", user):
             return False
         try:
             phone_number = twilio_client.lookups \
-                            .phone_numbers(user) \
-                            .fetch(country_code='US')
+                .phone_numbers(user) \
+                .fetch(country_code='US')
         except:
             return False
     return True
@@ -184,21 +191,23 @@ def ValidateUser(user):
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    return render_template('login.html', tryAgain = False)
+    return render_template('login.html', tryAgain=False)
 
-@app.route('/show_subscribed_courses', methods = ['POST', 'GET'])
+
+@app.route('/show_subscribed_courses', methods=['POST', 'GET'])
 def ShowSubscribedCourses():
     user = CleanUser(request.form['email'].strip().lower())
     if user == '':
-        return render_template('login.html', tryAgain=True) #Add feedback here
+        # Add feedback here
+        return render_template('login.html', tryAgain=True)
     query = datastore_client.query(kind='user')
     query.key_filter((datastore_client.key('user', user)), '=')
     results = list(query.fetch())
     if len(results) == 1:
         return render_template('courselist.html', courses=results[0]['courses'], user=user)
     else:
-        return render_template('login.html', tryAgain = True)
-        #return render_template('courselist.html', courses=['ARABIC', 'english'], user='dknopf@wesleyan.edu')
+        return render_template('login.html', tryAgain=True)
+        # return render_template('courselist.html', courses=['ARABIC', 'english'], user='dknopf@wesleyan.edu')
 
 
 @app.route('/unsubscribe', methods=['POST', 'GET'])
@@ -208,7 +217,8 @@ def unsubscribe():
     user_entity = datastore_client.get(datastore_client.key('user', user))
     try:
         if user_entity['courses'].count(course) > 1:
-            print('THERE IS MORE THAN ONE OCCURENCE BEFORE REMOVING OF COURSE: ', course, 'IN USER: ', user)
+            print('THERE IS MORE THAN ONE OCCURENCE BEFORE REMOVING OF COURSE: ',
+                  course, 'IN USER: ', user)
             print(user_entity['courses'])
         user_entity['courses'].remove(course)
         if (course in user_entity['courses']):
@@ -216,21 +226,23 @@ def unsubscribe():
         #print('got past user_entity removing course')
         datastore_client.put(user_entity)
 
-
-        course_entity = datastore_client.get(datastore_client.key('course', course))
+        course_entity = datastore_client.get(
+            datastore_client.key('course', course))
         #print('got past querying course entity')
         try:
             course_entity['emails'].remove(user)
             #print('got past removing email from course')
         except Exception as inst:
-            print('Error: ', str(inst), 'when removing course: ', course, 'for user: ', user)
+            print('Error: ', str(inst), 'when removing course: ',
+                  course, 'for user: ', user)
         datastore_client.put(course_entity)
         #datastore_client.put_multi([user_entity, course_entity])
         #print('got past updating client')
     except Exception as inst:
-        print('got into exception: ', str(inst), 'for unsubscribing on course: ', course, "and user: ", user)
+        print('got into exception: ', str(inst),
+              'for unsubscribing on course: ', course, "and user: ", user)
     return '', 204
-    #return render_template('courselist.html', courses = user_entity['courses'], user=user)
+    # return render_template('courselist.html', courses = user_entity['courses'], user=user)
 
 
 @app.route('/test.js', methods=['GET'])
@@ -245,6 +257,7 @@ def UpdateSemester():
     # ClearUsers()
     # CreateMasterEntity()
     # RefreshCourses()
+    return '', 204
 
 
 def UpdateDate():

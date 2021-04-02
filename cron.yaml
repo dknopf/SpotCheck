@@ -1,5 +1,9 @@
 cron:
-#   - description: "Check availability"
-#     url: /schedule
-#     schedule: every 5 mins
-#     timezone: EST
+  #   - description: "Check availability"
+  #     url: /schedule
+  #     schedule: every 5 mins
+  #     timezone: EST
+  - description: "Update Semester"
+    url: /update_semester
+    schedule: 1 of jul,dec 11:59
+    timezone: EST
