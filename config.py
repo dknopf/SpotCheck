@@ -8,7 +8,7 @@ class DateObject:
     def GetCurrDate(self):
         print("run getdate")
         month = datetime.today().month
-        if month > 9:
+        if month > 6:
             self.semester = "spring"
             self.year = str(datetime.today().year + 1)
         else:

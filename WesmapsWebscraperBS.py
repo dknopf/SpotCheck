@@ -143,18 +143,6 @@ def UpdateEntries(course, num_seats, depts, link):
 
         if results[0]['seats_avail'] == 0 and num_seats > 0:
             AddAggregatedMessages(results[0]['emails'], course, link)
-
-            # yag=yagmail.SMTP('spotcheckwes@gmail.com', oauth2_file="oauth2_creds.json") #oauth2 file is uploaded to gcloud not github
-            # contents = ['<p>Congrats, a spot has opened up in: <a href ="' + link + '">' + course + '</a>\n\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>']
-
-            # for email in results[0]['emails']:
-            #     try:
-            #         yag.send(email, 'A Spot is Open in ' + course, contents)
-            #         masterEntity[cf.dateObj.emailsSent] += 1
-            #         masterEntity[cf.totalEmailsSent] += 1
-            #     except:
-            #         pass
-
             results[0]['seats_avail'] = num_seats
         elif results[0]['seats_avail'] != num_seats:
             results[0]['seats_avail'] = num_seats

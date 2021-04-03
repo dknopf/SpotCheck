@@ -89,7 +89,8 @@ def SubscribeToCourses():
             user_entity = datastore.Entity(
                 key=datastore_client.key('user', user))
             user_entity.update({
-                'courses': []
+                'courses': [],
+                'username': user
             })
             datastore_client.put(user_entity)
         elif len(user_results) == 1:
@@ -243,11 +244,6 @@ def unsubscribe():
               'for unsubscribing on course: ', course, "and user: ", user)
     return '', 204
     # return render_template('courselist.html', courses = user_entity['courses'], user=user)
-
-
-@app.route('/test.js', methods=['GET'])
-def GetTestJS():
-    return render_template('testJS.html')
 
 
 @app.route('/update_semester', methods=['GET'])
