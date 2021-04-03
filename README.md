@@ -19,6 +19,8 @@ The www.SpotCheck.space webapp alerts you if space in a class you want opens up 
 
 `gcloud app deploy`
 
+Make sure to delete all old versions on GAE each time you redeploy, otherwise you will be charged a BUNCH.
+
 ## Cron:
 
 `gcloud app deploy cron.yaml`
