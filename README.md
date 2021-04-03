@@ -48,5 +48,5 @@ The crux of SpotCheck is that it is a Python Flask app that uses BeautifulSoup t
 * SpotCheck is hosted on Google App Engine and uses the Google Datastore database. This is super outdated tech, so if someone wants to update this project to use Firebase and Firestore that would be splendid
 * The domain is from domain.com. Right now it is set to auto-renew the domain on JULY 3 2021.
 * I am using a Google Cloud Load Balancer so that SSL is enforced and spotcheck can use https. This is nice because Google doesn't warn everyone who comes to the site that their info might be stolen, but also the load balancer somehow costs like a dollar a day which is nuts.
-* Yagmail is being used to send emails from spotcheckwes [at] gmail [dot] commmmmm
+* Yagmail is being used to send emails from spotcheckwes [at] gmail [dot] com
 * Twilio is being used to send text messages, but ONLY TO PEOPLE WITH US AREA CODES. It will automatically add on the +1 at the front, and maybe get rid of any other area code that is entered in.
