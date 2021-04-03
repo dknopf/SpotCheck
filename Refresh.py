@@ -6,15 +6,12 @@ import re
 import config as cf
 
 
-# Have to also create a master entity
-
-
 def Refresh(datastore_client):
     global client
     client = datastore_client
     updateMasterEntity()
-    # UpdateUsers()
-    # ClearCourses()
+    UpdateUsers()
+    ClearCourses()
 
 
 def updateMasterEntity():
