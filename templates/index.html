@@ -126,10 +126,9 @@ successTextColor = '#272727' %} {% set successBgColor = 'rgba(238, 238, 238,
   $(function () {
     function getCourses() {
       return $.ajax({
-        url: "/hello_world",
+        url: "/get_courses",
       });
     }
-    var courses = [];
     var items;
     getCourses().then((data) => {
       items = data["courses"];

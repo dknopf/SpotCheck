@@ -256,11 +256,10 @@ def UpdateSemester():
     return '', 204
 
 
-@app.route('/hello_world', methods=['GET'])
-def HelloWorld():
+@app.route('/get_courses', methods=['GET'])
+def GetCourses():
     GetCourseList()
 
-    print("hello, world")
     return({"courses": course_list})
 
 
