@@ -1,35 +1,43 @@
-﻿{% extends 'base.html' %}
-{% block head %}{% endblock %}
-
-{% block body %}
+﻿{% extends 'base.html' %} {% block head %}{% endblock %} {% block body %}
 
 <h1>Welcome to SpotCheck!</h1>
 <p class="main">
-    To receive alerts when a Wesleyan class becomes available during adjustment, enter your email or American phone number and the classes you're
-    interested in below! Enter a department abbrevation to subscribe to all classes in that department. <br /> <br />Separate the classes by comma, e.g. <i>Techiques of Fiction, COMP, AMST, Advanced Tiny Hats</i>
+  To receive alerts when a Wesleyan class becomes available during adjustment,
+  enter your email or American phone number and the classes you're interested in
+  below! Enter a department abbrevation to subscribe to all classes in that
+  department. <br />
+  <br />Separate the classes by comma, e.g.
+  <i>Techiques of Fiction, COMP, AMST, Advanced Tiny Hats</i>
 </p>
 <!--<form action="/" method="POST">
     <input type="text" name="content" id="content" />
     <input type="submit" value="SCRAPE ME" />
 </form>-->
 <div class="homePageForm">
-    <form action="/subscribe" method="POST" id="subscribeForm"></form>
-    <div class="subscribeFormTextInput">
-        <input type="hidden" name="page" value="index" form="subscribeForm" />
-        <label>Email address or phone number</label>
-        <br />
-        <br />
-        <input type="text" name="email" id="email" form="subscribeForm" />
-        <br />
-        <br />
-        <label>My courses</label>
-        <br />
-        <br />
-        <input type="text" name="courses" id="autocomplete" class="form-control" autocomplete="off" form="subscribeForm" />
-        <br />
-    </div>
+  <form action="/subscribe" method="POST" id="subscribeForm"></form>
+  <div class="subscribeFormTextInput">
+    <input type="hidden" name="page" value="index" form="subscribeForm" />
+    <label>Email address or phone number</label>
+    <br />
+    <br />
+    <input type="text" name="email" id="email" form="subscribeForm" />
+    <br />
+    <br />
+    <label>My courses</label>
+    <br />
+    <br />
+    <input
+      type="text"
+      name="courses"
+      id="autocomplete"
+      class="form-control"
+      autocomplete="off"
+      form="subscribeForm"
+    />
+    <br />
+  </div>
 
-    <!--<div class="errorDiv">
+  <!--<div class="errorDiv">
         <p class="errorText">
             {% if tryAgain %}
             No user with given email exists, please try again!
@@ -38,111 +46,128 @@
             {% endif %}
         </p>
     </div>-->
-    <br />
-    <div class="modalBottomDiv">
-        <input type="submit" value="Subscribe" class="bigBox" id="subscribeButton" form="subscribeForm" />
-        <form action="/login" method="GET">
-            <input type="submit" value="View subscribed courses" class="outlineButton" id="viewCoursesButton" />
-        </form>
-        <!--<p class="bottomText">To view the courses you are already subscribed to, <a href="{{ url_for('login') }}" class="standardLink">click here</a>.</p>-->
-    </div>
+  <br />
+  <div class="modalBottomDiv">
+    <input
+      type="submit"
+      value="Subscribe"
+      class="bigBox"
+      id="subscribeButton"
+      form="subscribeForm"
+    />
+    <form action="/login" method="GET">
+      <input
+        type="submit"
+        value="View subscribed courses"
+        class="outlineButton"
+        id="viewCoursesButton"
+      />
+    </form>
+    <!--<p class="bottomText">To view the courses you are already subscribed to, <a href="{{ url_for('login') }}" class="standardLink">click here</a>.</p>-->
+  </div>
 </div>
 
-<link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<link
+  rel="stylesheet"
+  href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"
+/>
 <script src="//code.jquery.com/jquery-1.9.1.js"></script>
 <script src="//code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script src="{{url_for('static', filename='js/jquery.toast.min.js')}}"></script>
-{% if request.MOBILE %}
-    {% set successTextColor = '#288807' %}
-    {% set successBgColor = 'rgb(127, 209, 99)' %}
-    {% set failureTextColor = '#CA0000' %}
-    {% set failureBgColor = 'rgb(235, 144, 144)' %}
-{% else %}
-    {% set successTextColor = '#272727' %}
-    {% set successBgColor = 'rgba(238, 238, 238, 0.4)' %}
-    {% set failureTextColor = '#CA0000' %}
-    {% set failureBgColor = 'rgba(238, 238, 238, 0.4)' %}
-{% endif %}
+{% if request.MOBILE %} {% set successTextColor = '#288807' %} {% set
+successBgColor = 'rgb(127, 209, 99)' %} {% set failureTextColor = '#CA0000' %}
+{% set failureBgColor = 'rgb(235, 144, 144)' %} {% else %} {% set
+successTextColor = '#272727' %} {% set successBgColor = 'rgba(238, 238, 238,
+0.4)' %} {% set failureTextColor = '#CA0000' %} {% set failureBgColor =
+'rgba(238, 238, 238, 0.4)' %} {% endif %}
 
 <script>
-
-    $(document).ready(function () {
-        console.log("{{status}}");
-        if ("{{status}}" == 'success') {
-            $.toast({
-                text: "<p class='toastText' id='success'>Subscribed!</p>",
-                bgColor: '{{successBgColor}}',
-                textColor: '{{successTextColor}}',
-                opacity: '0.4',
-                position: 'top-center',
-                icon: 'success',
-                showHideTransition: 'slide',
-                loader: false,
-            });
-        }
-        if ("{{status}}" == 'failure') {
-            $.toast({
-                text: "<p class='toastText' id='failure'>Failed to add courses. Please select from dropdown menu.</p>",
-                bgColor: '{{failureBgColor}}',
-                position: 'top-center',
-                textColor: '{{failureTextColor}}',
-                icon: 'error',
-                showHideTransition: 'slide',
-                loader: false,
-            });
-        }
-        if ("{{status}}" == 'badUsername') {
-            $.toast({
-                text: "<p class='toastText' id='failure'>Invalid email or phone number, please try again..</p>",
-                bgColor: '{{failureBgColor}}',
-                position: 'top-center',
-                textColor: '{{failureTextColor}}',
-                icon: 'error',
-                showHideTransition: 'slide',
-                loader: false,
-            });
-        }
-
-    });
+  $(document).ready(function () {
+    console.log("{{status}}");
+    if ("{{status}}" == "success") {
+      $.toast({
+        text: "<p class='toastText' id='success'>Subscribed!</p>",
+        bgColor: "{{successBgColor}}",
+        textColor: "{{successTextColor}}",
+        opacity: "0.4",
+        position: "top-center",
+        icon: "success",
+        showHideTransition: "slide",
+        loader: false,
+      });
+    }
+    if ("{{status}}" == "failure") {
+      $.toast({
+        text:
+          "<p class='toastText' id='failure'>Failed to add courses. Please select from dropdown menu.</p>",
+        bgColor: "{{failureBgColor}}",
+        position: "top-center",
+        textColor: "{{failureTextColor}}",
+        icon: "error",
+        showHideTransition: "slide",
+        loader: false,
+      });
+    }
+    if ("{{status}}" == "badUsername") {
+      $.toast({
+        text:
+          "<p class='toastText' id='failure'>Invalid email or phone number, please try again..</p>",
+        bgColor: "{{failureBgColor}}",
+        position: "top-center",
+        textColor: "{{failureTextColor}}",
+        icon: "error",
+        showHideTransition: "slide",
+        loader: false,
+      });
+    }
+  });
 </script>
-
 <script>
-    $(function () {
-        var items = {{ course_list| tojson }};
-
-        function split(val) {
-            return val.split(/,\s*/);
-        }
-        function extractLast(term) {
-            return split(term).pop();
-        }
-
-        $("#autocomplete")
-            .autocomplete({
-                minLength: 0,
-                source: function (request, response) {
-                    var results = $.ui.autocomplete.filter(
-                        items, extractLast(request.term))
-                    console.log(typeof results)
-                    response(results.slice(0,10));
-                },
-                focus: function () {
-                    return false;
-                },
-                select: function (event, ui) {
-                    var terms = split(this.value);
-                    // remove the current input
-                    terms.pop();
-                    // add the selected item
-                    terms.push(ui.item.value.replace(/,/g, " "));
-                    // add placeholder to get the comma-and-space at the end
-                    terms.push("");
-                    this.value = terms.join(", ");
-
-                    return false;
-                }
-            });
+  $(function () {
+    function getCourses() {
+      return $.ajax({
+        url: "/hello_world",
+      });
+    }
+    var courses = [];
+    var items;
+    getCourses().then((data) => {
+      items = data["courses"];
     });
+
+    function split(val) {
+      return val.split(/,\s*/);
+    }
+    function extractLast(term) {
+      return split(term).pop();
+    }
+
+    $("#autocomplete").autocomplete({
+      minLength: 0,
+      source: function (request, response) {
+        var results = $.ui.autocomplete.filter(
+          items,
+          extractLast(request.term)
+        );
+        console.log(typeof results);
+        response(results.slice(0, 10));
+      },
+      focus: function () {
+        return false;
+      },
+      select: function (event, ui) {
+        var terms = split(this.value);
+        // remove the current input
+        terms.pop();
+        // add the selected item
+        terms.push(ui.item.value.replace(/,/g, " "));
+        // add placeholder to get the comma-and-space at the end
+        terms.push("");
+        this.value = terms.join(", ");
+
+        return false;
+      },
+    });
+  });
 </script>
 {% endblock %}
-

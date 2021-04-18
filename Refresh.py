@@ -27,7 +27,7 @@ def UpdateUsers():
 
     yag = yagmail.SMTP('spotcheckwes@gmail.com',
                        oauth2_file="oauth2_creds.json")
-    welcomeBackMessage = "Hello SpotCheck Users! This month is the start of a new pre-reg period, and SpotCheck is once again open for business! To be alerted when a seat opens in a class you want during adjustment, simply go to https://spotcheck.space and sign up! The earlier you sign up, the quicker you'll be notified when a seat opens! All accounts are deleted each semester so you will have to sign up again. Love, SpotCheck"
+    welcomeBackMessage = "Hello SpotCheck Users! This month is the start of a new pre-reg period, and SpotCheck is once again open for business! To be alerted when a seat opens in a class you want during adjustment, simply go to https://spotcheck.space and sign up! The earlier you sign up, the quicker you'll be notified when a seat opens! All account information has been deleted at the end of last semester so you will have to sign up again. Love, SpotCheck"
     query = client.query(kind='user')
     results = list(query.fetch())
     for result in results:

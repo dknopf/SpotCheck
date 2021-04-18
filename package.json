@@ -1,0 +1,24 @@
+{
+  "name": "spotcheck",
+  "version": "1.0.0",
+  "description": "The www.SpotCheck.space webapp alerts you if space in a class you want opens up during Wesleyan schedule adjustment. Simply put your email or phone number and the classes you're interested in on the subscribe page and click enter and you will receive an email or text when a spot opens up!",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@google-cloud/datastore": "^6.0.0",
+    "browserify": "^17.0.0",
+    "request": "^2.88.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dknopf/SpotCheck.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dknopf/SpotCheck/issues"
+  },
+  "homepage": "https://github.com/dknopf/SpotCheck#readme"
+}

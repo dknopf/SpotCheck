@@ -50,8 +50,8 @@ def autocomplete():
 def index():
     status = request.args.get('status', None)
     print('got into index!')
-    GetCourseList()
-    return render_template('index.html', course_list=course_list, status=status)
+    # GetCourseList()
+    return render_template('index.html', status=status)
     # if request.method == 'POST':
 
     #    StartFunction(datastore_client)
@@ -254,6 +254,14 @@ def UpdateSemester():
     # CreateMasterEntity()
     # RefreshCourses()
     return '', 204
+
+
+@app.route('/hello_world', methods=['GET'])
+def HelloWorld():
+    GetCourseList()
+
+    print("hello, world")
+    return({"courses": course_list})
 
 
 def UpdateDate():
