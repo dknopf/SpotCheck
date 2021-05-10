@@ -50,7 +50,6 @@ def autocomplete():
 def index():
     status = request.args.get('status', None)
     print('got into index!')
-    # GetCourseList()
     return render_template('index.html', status=status)
     # if request.method == 'POST':
 
@@ -250,16 +249,12 @@ def unsubscribe():
 def UpdateSemester():
     UpdateDate()
     Refresh(datastore_client)
-    # ClearUsers()
-    # CreateMasterEntity()
-    # RefreshCourses()
     return '', 204
 
 
 @app.route('/get_courses', methods=['GET'])
 def GetCourses():
     GetCourseList()
-
     return({"courses": course_list})
 
 
