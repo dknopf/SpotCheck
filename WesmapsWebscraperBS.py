@@ -150,6 +150,7 @@ def UpdateEntries(course, num_seats, depts, link):
         results[0]['link'] = link
         results[0]['date_scraped'] = datetime.utcnow()
         client.put(results[0])
+    # A course not in course list has been found
     elif len(results) == 0:
         print('got into len results is 0')
         new_entity = datastore.Entity(key=client.key('course', course))

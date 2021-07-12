@@ -14,13 +14,42 @@ def Refresh(datastore_client):
     ClearCourses()
 
 
+"""
+Updates the master entity to add new fields for the new semester, such as emailsSentFall2021
+"""
+
+
 def updateMasterEntity():
     query = client.query(kind='masterEntity')
     ME = list(query.fetch())[0]
-    ME[cf.dateObj.courseList] = []
-    ME[cf.dateObj.emailsSent] = 0
-    ME[cf.dateObj.textsSent] = 0
+    # Check if field exists already to avoid overwriting
+
+    fieldsDict = {"listFields":
+                  {
+                      "fields": [cf.dateObj.courseList, cf.dateObj.userList],
+                      "default": []
+                  },
+                  "intFields":
+                  {
+                      "fields": [cf.dateObj.emailsSent,
+                                 cf.dateObj.textsSent,
+                                 cf.dateObj.numUsers],
+                      "default": 0
+                  }
+                  }
+    for fieldType in ["listFields", "intFields"]:
+        for field in fieldsDict[fieldType]["fields"]:
+            try:
+                if ME[field] == "test":
+                    pass
+            except:
+                ME[field] = fieldsDict[fieldType]["default"]
     client.put(ME)
+
+
+"""
+Sends all of the current users a message saying that SpotCheck is starting again and then moves them to a new list in master entity
+"""
 
 
 def UpdateUsers():

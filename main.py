@@ -14,6 +14,7 @@ from twilio.rest import Client as Twilio_Client
 
 from Refresh import Refresh
 import config as cf
+import WesmapsWebscraperBS as scraper
 
 datastore_client = datastore.Client()
 twilio_client = Twilio_Client(
@@ -75,6 +76,7 @@ def scheduled_processes():
 
 @app.route('/subscribe', methods=['POST', 'GET'])
 def SubscribeToCourses():
+    masterEntity = scraper.RetrieveMasterEntity(datastore_client)
     user = CleanUser(request.form['email'].strip().lower())
     if not ValidateUser(user):
         return redirect(url_for('index', status='badUsername'))
@@ -84,6 +86,7 @@ def SubscribeToCourses():
         user_query.key_filter((datastore_client.key('user', user)), '=')
         user_results = list(user_query.fetch())
         print('len user results is', len(user_results))
+        # If no user with this name has been found, create new user, and add it to user list
         if len(user_results) == 0:
             user_entity = datastore.Entity(
                 key=datastore_client.key('user', user))
@@ -92,6 +95,10 @@ def SubscribeToCourses():
                 'username': user
             })
             datastore_client.put(user_entity)
+            masterEntity[cf.dateObj.userList].append(user)
+            masterEntity[cf.dateObj.numUsers] += 1
+            masterEntity[cf.totalNumUsers] += 1
+            datastore_client.put(masterEntity)
         elif len(user_results) == 1:
             user_entity = user_results[0]
         print('courses string before findall is is:', courses)
