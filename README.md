@@ -27,10 +27,15 @@ Make sure to delete all old versions on GAE each time you redeploy, otherwise yo
 
 # Changing semesters
 
-All of this functionality should be automatically handled by the update_semester path. This is called via a cron job that runs on the 1st of November and April. Here is what needs to be done each semester in case the function isn't working properly, or if you want to manually update SpotCheck (such as for freshman adjustment in august?)
+All of this functionality should be automatically handled by the update_semester path. This is called via a cron job that runs on the 1st of November and April. Here is what needs to be done each semester in case the function isn't working properly, or if you want to manually update SpotCheck.
 
-1. Create an array field in masterEntity in datastore that is `courseList<Semester><year>`.
-2. Double check that all user and course entities have been deleted from datastore.
+1. Create new fields for new data
+  * numUsers
+  * emailsSent
+  * textsSent
+  * courseList
+  * userList   
+3. Double check that all user and course entities have been deleted from datastore.
 
 ## After Adjustment Ends
 
