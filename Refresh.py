@@ -10,7 +10,12 @@ def Refresh(datastore_client):
     global client
     client = datastore_client
     updateMasterEntity()
-    UpdateUsers()
+    if cf.dateObj.month > 5 and cf.dateObj.month < 9:
+        # It is summer, don't send the message to users but make sure they don't get notified when a seat opens during freshman adjustment
+        pass
+    else:
+        # It is not summer.
+        UpdateUsers()
     ClearCourses()
 
 
@@ -40,6 +45,7 @@ def updateMasterEntity():
     for fieldType in ["listFields", "intFields"]:
         for field in fieldsDict[fieldType]["fields"]:
             try:
+                # WIll error out if field doesn't exist, but if it does exist will do nothing
                 if ME[field] == "test":
                     pass
             except:

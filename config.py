@@ -3,11 +3,12 @@ from datetime import datetime
 
 class DateObject:
     def __init__(self):
-        self.year = self.semester = self.courseList = self.emailsSent = self.userList = self.numUsers = ""
+        self.year = self.semester = self.courseList = self.emailsSent = self.userList = self.numUsers = self.month = ""
 
     def GetCurrDate(self):
         print("run getdate")
         month = datetime.today().month
+        self.month = month
         if month > 10:
             self.semester = "spring"
             self.year = str(datetime.today().year + 1)

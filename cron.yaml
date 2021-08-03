@@ -5,5 +5,5 @@ cron:
   #   timezone: EST
   - description: "Update Semester"
     url: /update_semester
-    schedule: 1 of nov,april 11:59
+    schedule: 1 of nov,aug,april 11:59
     timezone: EST
