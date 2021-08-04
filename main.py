@@ -11,6 +11,7 @@ import ssl
 import yagmail
 import re
 from twilio.rest import Client as Twilio_Client
+from functools import wraps
 
 from Refresh import Refresh
 import config as cf
@@ -66,12 +67,6 @@ def GetCourseList():
     results = list(query.fetch())
     global course_list
     course_list = results[0][cf.dateObj.courseList]
-
-
-@app.route('/schedule')
-def scheduled_processes():
-    StartFunction(datastore_client)
-    return 'Hopefully this never returns'
 
 
 @app.route('/subscribe', methods=['POST', 'GET'])
@@ -252,11 +247,30 @@ def unsubscribe():
     # return render_template('courselist.html', courses = user_entity['courses'], user=user)
 
 
+def ValidateCron(f):
+    @wraps(f)
+    def check_authorization(*args, **kwargs):
+        if request.headers.get("X-Appengine-Cron") == 'true':
+            return f(*args, **kwargs)
+        else:
+            return "Please don't try to run the backend cron commands!"
+
+    return check_authorization
+
+
 @app.route('/update_semester', methods=['GET'])
+@ValidateCron
 def UpdateSemester():
     UpdateDate()
     Refresh(datastore_client)
     return '', 204
+
+
+@app.route('/schedule')
+@ValidateCron
+def scheduled_processes():
+    StartFunction(datastore_client)
+    return 'Hopefully this never returns'
 
 
 @app.route('/get_courses', methods=['GET'])

@@ -12,7 +12,7 @@ def Refresh(datastore_client):
     updateMasterEntity()
     if cf.dateObj.month > 5 and cf.dateObj.month < 9:
         # It is summer, don't send the message to users but make sure they don't get notified when a seat opens during freshman adjustment
-        pass
+        print("It is summer")
     else:
         # It is not summer.
         UpdateUsers()
@@ -79,7 +79,6 @@ def UpdateUsers():
 def ClearCourses():
     query = client.query(kind='course')
     print('made it past query for all courses in clearcourses')
-    print('made it past query key filter')
     results = list(query.fetch())
     for result in results:
         key = result.key
