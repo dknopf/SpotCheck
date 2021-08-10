@@ -27,20 +27,21 @@ Make sure to delete all old versions on GAE each time you redeploy, otherwise yo
 
 # Changing semesters
 
-All of this functionality should be automatically handled by the update_semester path. This is called via a cron job that runs on the 1st of November and April. Here is what needs to be done each semester in case the function isn't working properly, or if you want to manually update SpotCheck.
+All of this functionality should be automatically handled by the update_semester path. This is called via a cron job that runs on the 1st of November, August, and April. Here is what needs to be done each semester in case the function isn't working properly, or if you want to manually update SpotCheck.
 
 1. Create new fields for new data
   * numUsers
   * emailsSent
   * textsSent
   * courseList
-  * userList   
+  * userList
+2. Send out a message to all users from last semester telling them that SpotCheck is available again. This doesn't happen during the summert refresh, since only freshmen have adjustment during the summer so upperclassmen shouldn't be notified.
 3. Double check that all user and course entities have been deleted from datastore.
 
 ## After Adjustment Ends
 
-1. Comment out the cron information in `cron.yaml` below line 1, leaving line 1: `cron:` intact, then upload that cron job to google cloud.
-2. You may want to disable the app altogether after the two week adjustment period, because sometimes Google Cloud just charges a ton of money
+1. Comment out the cron job for /schedule in `cron.yaml` below line 1, leaving line 1: `cron:` intact, then upload that cron job to google cloud.
+2. Don't disable the app during this period, as it will shut off spotcheck.space, and showing a blank page to potential viewers/portfolio lookers is bad.
 
 
 # How SpotCheck Works
@@ -51,7 +52,7 @@ The crux of SpotCheck is that it is a Python Flask app that uses BeautifulSoup t
 
 * SpotCheck is a Python Flask app, using BeautifulSoup for webscraping.
 * SpotCheck is hosted on Google App Engine and uses the Google Datastore database. This is super outdated tech, so if someone wants to update this project to use Firebase and Firestore that would be splendid
-* The domain is from domain.com. Right now it is set to auto-renew the domain on JULY 3 2021.
-* I am using a Google Cloud Load Balancer so that SSL is enforced and spotcheck can use https. This is nice because Google doesn't warn everyone who comes to the site that their info might be stolen, but also the load balancer somehow costs like a dollar a day which is nuts.
+* The domain is from domain.com. Right now it is set to auto-renew the domain in JULY 2022.
+* I am using a Google Cloud Load Balancer so that SSL is enforced and SpotCheck can use https. This is nice because Google doesn't warn everyone who comes to the site that their info might be stolen, but also the load balancer is a bit expensive.
 * Yagmail is being used to send emails from spotcheckwes [at] gmail [dot] com
-* Twilio is being used to send text messages, but ONLY TO PEOPLE WITH US AREA CODES. It will automatically add on the +1 at the front, and maybe get rid of any other area code that is entered in.
+* Twilio is being used to send text messages, but ONLY TO PEOPLE WITH US AREA CODES. SpotCheck will automatically add on the +1 at the front, and get rid of any other area code that is entered in.
