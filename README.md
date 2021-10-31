@@ -27,7 +27,7 @@ Make sure to delete all old versions on GAE each time you redeploy, otherwise yo
 
 # Changing semesters
 
-All of this functionality should be automatically handled by the update_semester path. This is called via a cron job that runs on the 1st of November, August, and April. Here is what needs to be done each semester in case the function isn't working properly, or if you want to manually update SpotCheck.
+All of this functionality should be automatically handled by the update_semester path. There is a cron job that runs on the 1st of November, August, and April to call this, but **it is not enabled right now, so it needs to be reenabled and manually run via the cloud scheduler**. Here is what needs to be done each semester in case the function isn't working properly, or if you want to manually update SpotCheck.
 
 1. Create new fields for new data
   * numUsers
