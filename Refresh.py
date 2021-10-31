@@ -54,7 +54,7 @@ def updateMasterEntity():
 
 
 """
-Sends all of the current users a message saying that SpotCheck is starting again and then moves them to a new list in master entity
+Sends all of the current users a message saying that SpotCheck is starting again and then deletes the user entity
 """
 
 
@@ -62,17 +62,20 @@ def UpdateUsers():
 
     yag = yagmail.SMTP('spotcheckwes@gmail.com',
                        oauth2_file="oauth2_creds.json")
-    welcomeBackMessage = "Hello SpotCheck Users! This month is the start of a new pre-reg period, and SpotCheck is once again open for business! To be alerted when a seat opens in a class you want during adjustment, simply go to https://spotcheck.space and sign up! The earlier you sign up, the quicker you'll be notified when a seat opens! All account information has been deleted at the end of last semester so you will have to sign up again. Love, SpotCheck"
+
+    # The text welcome back message has to be shorter since Twilio counts every 160 characters as a text message so sending a long text is pricey
+    welcomeBackMessageEmail = "Hello SpotCheck Users! This month is the start of a new pre-reg period, and SpotCheck is once again open for business! To be alerted when a seat opens in a class you want during adjustment, simply go to https://spotcheck.space and sign up. The earlier you sign up, the quicker you'll be notified when a seat opens! All account information has been deleted at the end of last semester so you will have to sign up again. If you have any SpotCheck success stories, please tell me about them at spotcheckwes@gmail.com! \n\nAnd to all my fellow seniors doing their final pre-reg, it’s been a pleasure knowing you all. Let’s make this last semester the best one yet. \n\nLove, \nSpotCheck"
+    welcomeBackMessageText = "This month is the start of a new pre-reg period, and SpotCheck is open for business! To be alerted when a seat opens in a class you want during adjustment, go to https://spotcheck.space and sign up. All account information has been deleted at the end of last semester so you will have to sign up again. \n\nAnd to all my fellow seniors doing their final pre-reg, it’s been a pleasure knowing you all. Let’s make this last semester the best one yet \n\nLove, \nSpotCheck"
     query = client.query(kind='user')
     results = list(query.fetch())
     for result in results:
         key = result.key
         username = result["username"]
         if re.search("\d{9,10}", username):  # Text
-            sendMessage(username, welcomeBackMessage)
+            sendMessage(username, welcomeBackMessageText)
         elif re.search("@", username):  # Email
             yag.send(username, 'SpotCheck Is Now Active Again!',
-                     welcomeBackMessage)
+                     welcomeBackMessageEmail)
         client.delete(key)
 
 
