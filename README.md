@@ -46,7 +46,7 @@ All of this functionality should be automatically handled by the update_semester
 
 # How SpotCheck Works
 
-The crux of SpotCheck is that it is a Python Flask app that uses BeautifulSoup to scrape the WesMaps website every 5 minutes. All of the scraping and email/text sending functionality is handled in `WesmapsWebscraperBS.py`. In the `UpdateEntries` function, the scraper will check if the current course exists in datastore, and if it does then it updates the seats_avail, adding a scheduled message to all the users subscribed to the course if seats are available. After the scraper has run and checked all courses it will send all messages to users who need to be updated.
+The crux of SpotCheck is that it is a Python Flask app that uses BeautifulSoup to scrape the WesMaps website. It takes about 5 minutes for the code to run, and then there is a scheduled 1 minute interval to ensure that duplicate runs don't happen simulatenously (which is the every 1 minute in the cron job). All of the scraping and email/text sending functionality is handled in `WesmapsWebscraperBS.py`. In the `UpdateEntries` function, the scraper will check if the current course exists in datastore, and if it does then it updates the seats_avail, adding a scheduled message to all the users subscribed to the course if seats are available. After the scraper has run and checked all courses it will send all messages to users who need to be updated.
 
 ## Technologies Used:
 
