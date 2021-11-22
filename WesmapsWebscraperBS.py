@@ -200,7 +200,7 @@ def SendMessages():
     for user in messages_to_send_dict:
         if re.search("\d{9,10}", user):  # Text
             messages_to_send_dict[user].append(
-                '\nVisit https://www.spotcheck.space/login to see your subscribed courses/unsubscribe')
+                '\nAct fast, others were notified too! \nVisit https://www.spotcheck.space/login to see your subscribed courses/unsubscribe')
             contents = ''.join(messages_to_send_dict[user])
             message = twilio_client.messages \
                 .create(
@@ -212,7 +212,7 @@ def SendMessages():
             masterEntity[cf.totalTextsSent] += 1
         elif re.search("@", user):  # Email
             messages_to_send_dict[user].append(
-                '\nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>')
+                '\nMake sure to act fast, other people have been notified and are trying to get this seat too! \nClick <a href="https://www.spotcheck.space/login">here</a> to see your subscribed courses/unsubscribe</p>')
             contents = '<p>' + ''.join(messages_to_send_dict[user])
             yag.send(user, 'A Spot is Open in a Class You Want!', contents)
             masterEntity[cf.dateObj.emailsSent] += 1
