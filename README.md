@@ -35,7 +35,7 @@ All of this functionality should be automatically handled by the update_semester
   * textsSent
   * courseList
   * userList
-2. Send out a message to all users from last semester telling them that SpotCheck is available again. This doesn't happen during the summert refresh, since only freshmen have adjustment during the summer so upperclassmen shouldn't be notified.
+2. Send out a message to all users from last semester telling them that SpotCheck is available again. This doesn't happen during the summert refresh, since only freshmen have adjustment during the summer so upperclassmen shouldn't be notified. Right now this functionality is disabled as well, so it will not send out the welcome message.
 3. Double check that all user and course entities have been deleted from datastore.
 
 ## After Adjustment Ends
