@@ -1,6 +1,10 @@
 # SpotCheck
 The www.SpotCheck.space webapp alerts you if space in a class you want opens up during Wesleyan schedule adjustment. Simply put your email or phone number and the classes you're interested in on the subscribe page and click enter and you will receive an email or text when a spot opens up!
 
+
+# RIP SPOTCHECK :( 
+As of October 31st, 2022, SpotCheck will no longer be supported. Continuing to run it would require me to deal with updating package versions and other such nonsense, and since I have graduated I am letting this website die so that some new plucky young underclassmen can build their own version and get that valuable experience. SpotCheck had a good few years, it served almost 2,000 users and sent over 8,000 texts and emails, and helped dozens of students get into classes they wanted. This was my first project, my baby, and I will miss it dearly.
+
 # Setup
 
 1. Log into the Google Cloud SDK
