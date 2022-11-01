@@ -1,9 +1,9 @@
 cron:
-  - description: "Check availability"
-    url: /schedule
-    schedule: every 1 mins
-    timezone: EST
-  # - description: "Update Semester"
-  #   url: /update_semester
-  #   schedule: 1 of nov,aug,april 11:59
+  # - description: "Check availability"
+  #   url: /schedule
+  #   schedule: every 1 mins
   #   timezone: EST
+  - description: "Update Semester"
+    url: /update_semester
+    schedule: 1 of nov,aug,april 11:59
+    timezone: EST

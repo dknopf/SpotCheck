@@ -5,6 +5,10 @@ import yagmail
 import re
 import config as cf
 
+"""
+I believe that this does not also add the current courses, and that the /schedule cron job has to be run
+"""
+
 
 def Refresh(datastore_client):
     global client
@@ -51,6 +55,8 @@ def updateMasterEntity():
             except:
                 ME[field] = fieldsDict[fieldType]["default"]
     client.put(ME)
+
+# Sends a welcome back message. Currently commented out
 
 
 def SendMessage(username):
